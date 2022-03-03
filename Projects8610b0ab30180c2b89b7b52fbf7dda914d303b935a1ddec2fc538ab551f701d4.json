@@ -1,0 +1,205 @@
+[
+    {
+        "projectShortTitle": {
+            "localizedStrings": {
+                "cs": "PARVI Cibulka",
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "fi": "",
+                "et": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": "",
+                "en": "PARVI Cibulka"
+            }
+        },
+        "marketingHeadLine": {
+            "localizedStrings": {
+                "cs": "Nové byty na prodej v PARVI Cibulka",
+                "en": "New apartments for sale in PARVI Cibulka",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "marketingDescription": {
+            "localizedStrings": {
+                "cs": "Netradiční projekt PARVI Cibulka nabídne svým rezidentům unikátní bydlení loftového typu. To vznikne v rámci přestavby majestátní budovy původní továrny Meopta. Její industriální charakter zůstane zachován a doplní jej moderní prvky a řešení. Nové byty tak nabídnou stylové kvalitní bydlení v širším centru Prahy, přitom obklopené přírodou. Severně situované byty se budou pyšnit překrásnými výhledy na Prahu a ty jižně položené budou směřovat do sousedního přírodního parku.",
+                "en": "The untraditional PARVI Cibulka project offers its residents unique loft-style flats. It is going up as part of the reconstruction of the majestic Meopta factory building. Its industrial character will be preserved and supplemented with modern elements and designs. Thus, the new flats will offer stylish housing in the wider centre of Prague, while surrounded by nature. The flats facing north will be able to boast of beautiful views of Prague, while those facing south will look towards the neighbouring park.",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "coordinatesLatitude": 50.062133,
+        "coordinatesLongitude": 14.36195,
+        "promoteProject": false,
+        "crmId": "1-I1N4JU",
+        "nameFromCrm": "PARVI Cibulka",
+        "projectAreaMarketingName": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "projectAreaMarketingName English",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "projectAreaMarketingName Polish",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "webProjectStatusKey": "ToBeReady",
+        "countryCodeKey": "CZ",
+        "siteAddress": {
+            "localizedStrings": {
+                "cs": "Naskové 1189/1"
+            }
+        },
+        "projectSitePostalCode": {
+            "localizedStrings": {
+                "cs": "150 00"
+            }
+        },
+        "siteCity": {
+            "localizedStrings": {
+                "cs": "Praha",
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "fi": "",
+                "et": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": "",
+                "en": ""
+            }
+        },
+        "district": {
+            "localizedStrings": {
+                "cs": "Praha 5"
+            }
+        },
+        "completionDate": "2022-08-31T00:00:00",
+        "plotOwnershipCvlKey": "OptionalLeasePlot",
+        "numberOfApartments": 150,
+        "showings": {
+            "showingModelItems": [
+                {
+                    "start": "2020-10-25T12:00:00",
+                    "end": "2020-10-25T13:00:00",
+                    "order": 1
+                },
+                {
+                    "start": "2020-10-13T12:00:00",
+                    "end": "2020-10-13T13:00:00",
+                    "order": 2
+                },
+                {
+                    "start": "2020-10-15T12:00:00",
+                    "end": "2020-10-15T13:00:00",
+                    "order": 3
+                },
+                {
+                    "start": "2020-10-18T12:00:00",
+                    "end": "2020-10-18T13:00:00",
+                    "order": 4
+                },
+                {
+                    "start": "2020-10-19T12:00:00",
+                    "end": "2020-10-19T13:00:00",
+                    "order": 5
+                }
+            ]
+        },
+        "projectB2BRestaurants": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "",
+                "et": "",
+                "fi": "Huoleton vaihtoehto ykkös- ja kakkoskodiksi, loma- ja sijoitusasunnoksi! Vierumäen Chalets 5 -asunto sopii moneen käyttötarkoitukseen. Suomen monipuolisimman urheilukeskuksen palvelut ovat naapuristossa ja Cooke-kentän 1. tiille on vain kahden minuutin kävelymatka! Täällä vapaa-ajan puuhat eivät ole säästä kiinni, ja poissa ollessasi voit saada asunnostasi vuokratuottoa!",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "projectCrmDataApproved": true,
+        "projectPublish": {
+            "en": "English",
+            "fi": "Finnish"
+        },
+        "projectPublishFlag": true,
+        "cmsUrl": "https://es-cz.preprod.yitgroup.com/prodej-bytu/praha/praha-5/parvi-cibulka",
+        "campaigns": [
+            {
+                "campaignId": "fcec00b8-dbf5-4bc5-a5c6-b0b0f655b1c3",
+                "campaignName": "BONUS_PC_AZ_500_000",
+                "campaignBadgeText": {
+                    "localizedStrings": {
+                        "cs": "Bonus kuchyňská linka až 500 000 Kč",
+                        "en": "Bonus for the fitted kitchen up to CZK 500 000",
+                        "et": "",
+                        "fi": "",
+                        "lv": "",
+                        "lt": "",
+                        "pl": "",
+                        "ru": "",
+                        "sk": "",
+                        "sv-FI": "",
+                        "tt-RU": ""
+                    }
+                },
+                "campaignLandingPageUrl": "https://www.yit.cz/prodej-bytu/praha/praha-5/parvi-cibulka",
+                "campaignStartDate": "2021-10-04T10:00:00",
+                "campaignEndDate": "2023-10-05T09:34:00",
+                "campaignPublish": {
+                    "en": "English",
+                    "cs": "Czech"
+                },
+                "campaignPreReservation": false,
+                "campaignCode": "TestCode"
+            }
+        ],
+        "resources": [
+            {
+                "index": 0,
+                "subType": "ProductItemResourceCarousel",
+                "typeKey": "image",
+                "url": "https://res.cloudinary.com/yitpre/image/upload/{param}/v1636062756/294814.jpg"
+            }
+        ],
+        "subProjects": [
+            {
+                "subProjectConceptFilterKey": "Smartti",
+                "subProjectConceptFilterAndLabelKey": "Nearby",
+                "subProjectCrmId": "1-LIQCRE",
+                "buildingTypeKey": "BlockOfFlats",
+                "numberOfFloors": 1,
+                "elevatorKey": "True",
+                "crmDataApproved": true,
+                "subProjectForSale": true
+            }
+        ]
+    }
+]

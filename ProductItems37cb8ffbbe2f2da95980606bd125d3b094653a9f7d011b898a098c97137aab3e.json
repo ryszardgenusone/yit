@@ -1,0 +1,202 @@
+[
+    {
+        "openInfo1": {
+            "localizedStrings": {
+                "cs": "K většině bytových jednotek je povinností přikoupení parkovacích stání. Počet parkovacích míst je určen dle velikosti bytové jednotky.\n",
+                "en": "Most of the housing units are required to purchase parking spaces. The number of parking spaces is determined by the size of the housing unit.",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "openInfo2": {
+            "localizedStrings": {
+                "en": "Open info 2 English",
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "cs": "",
+                "pl": "Open info 2 Polish",
+                "fi": "",
+                "et": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "openInfo3": {
+            "localizedStrings": {
+                "en": "Open info 3 English",
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "cs": "",
+                "pl": "Open info 3 Polish",
+                "fi": "",
+                "et": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "cityAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
+        "districtAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
+        "marketingAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
+        "subProjectCrmId": "1-LIQCRE",
+        "gBuilderUrl": "https://GBuilderUrl.com",
+        "apartmentNumber": "E 105 DUPLEX/GALLERY",
+        "reservationStatusKey": "Free",
+        "buildingTypeKey": "BlockOfFlats",
+        "apartmentType": {
+            "localizedStrings": {
+                "cs": "4/5kk",
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "fi": "",
+                "et": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": "",
+                "en": "Apartment Type English"
+            }
+        },
+        "crmId": "1-M11S63",
+        "additionalInformation": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Additional Information English",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "Additional Information Polish",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "floorNumber": "1",
+        "numberOfRooms": "4",
+        "floorsInApartment": "1",
+        "apartmentSize": 151.8,
+        "totalAreaSize": 151.8,
+        "apartmentAddress": "Naskové 1189/1 E 105 DUPLEX/GALLERY",
+        "saunaKey": "False",
+        "balconyKey": "True",
+        "balconySize": 20.1,
+        "terraceKey": "True",
+        "terraceSize": 34.9,
+        "firePlaceKey": "False",
+        "windowsOrientation": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Windows Orientation English",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "Windows Orientation Polish",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "salesPrice": 19301552,
+        "nonDebtPrice": 15951696,
+        "plotShareRedemptionPrice": 100000,
+        "leisureHomeTotalPrice": 100000,
+        "crmDataApproved": true,
+        "productItemForSale": true,
+        "cmsUrl": "https://es-cz.preprod.yitgroup.com/prodej-bytu/praha/praha-5/parvi-cibulka/1-m11s63",
+        "campaigns": [
+            {
+                "campaignId": "a13d0ef1-6068-409e-88ee-4d8d9ec35cff",
+                "campaignName": "BONUS_PC_Kuchyne_4kk",
+                "campaignBadgeText": {
+                    "localizedStrings": {
+                        "cs": "Bonus 500 000 Kč",
+                        "en": "Bonus CZK 500,000",
+                        "et": "",
+                        "fi": "",
+                        "lv": "",
+                        "lt": "",
+                        "pl": "",
+                        "ru": "",
+                        "sk": "",
+                        "sv-FI": "",
+                        "tt-RU": ""
+                    }
+                },
+                "campaignLandingPageUrl": "https://google.com",
+                "campaignStartDate": "2021-10-04T10:00:00",
+                "campaignEndDate": "2023-10-04T15:56:00",
+                "campaignCode": "TestCode",
+                "campaignPreReservation": false,
+                "campaignPublish": {
+                    "en": "English",
+                    "cs": "Czech"
+                }
+            }
+        ],
+        "resources": [
+            {
+                "index": 0,
+                "subType": "ProductItemResourceCarousel",
+                "typeKey": "image",
+                "url": "https://res.cloudinary.com/yitpre/image/upload/{param}/v1616817117/305219.jpg"
+            }
+        ],
+        "badges": [
+            {
+                "title": {
+                    "localizedStrings": {
+                        "cs": "",
+                        "en": "IconTest2",
+                        "et": "",
+                        "fi": "IconTest2",
+                        "lv": "",
+                        "lt": "",
+                        "pl": "",
+                        "ru": "",
+                        "sk": "",
+                        "sv-FI": "",
+                        "tt-RU": ""
+                    }
+                },
+                "hint": {
+                    "localizedStrings": {
+                        "cs": "",
+                        "en": "Hint text",
+                        "et": "",
+                        "fi": "Hint text",
+                        "lv": "",
+                        "lt": "",
+                        "pl": "",
+                        "ru": "",
+                        "sk": "",
+                        "sv-FI": "",
+                        "tt-RU": ""
+                    }
+                },
+                "resources": [
+                    {
+                        "index": 0,
+                        "subType": "BadgeIcon",
+                        "typeKey": "image",
+                        "url": "https://res.cloudinary.com/yittest/image/upload//{param}/v1642595911/360014.jpg"
+                    }
+                ]
+            }
+        ]
+    }
+]
