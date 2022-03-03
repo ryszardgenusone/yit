@@ -46,6 +46,9 @@
             }
         },
         "coordinatesLatitude": 50.062133,
+        "cityAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
+        "districtAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
+        "marketingAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
         "coordinatesLongitude": 14.36195,
         "promoteProject": false,
         "crmId": "1-I1N4JU",
