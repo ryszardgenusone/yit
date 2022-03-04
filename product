@@ -45,9 +45,6 @@
                 "tt-RU": ""
             }
         },
-        "cityAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
-        "districtAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
-        "marketingAreaId" : "0cf52073-1b4f-4a2b-b75a-7438b4b01efb",
         "subProjectCrmId": "1-LIQCRE",
         "gBuilderUrl": "https://GBuilderUrl.com",
         "apartmentNumber": "E 105 DUPLEX/GALLERY",
@@ -117,6 +114,7 @@
         "leisureHomeTotalPrice": 100000,
         "crmDataApproved": true,
         "productItemForSale": true,
+        "productPublish": true,
         "cmsUrl": "https://es-cz.preprod.yitgroup.com/prodej-bytu/praha/praha-5/parvi-cibulka/1-m11s63",
         "campaigns": [
             {
