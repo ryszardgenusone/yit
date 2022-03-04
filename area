@@ -269,9 +269,256 @@
         "resources": [
             {
                 "index": 0,
-                "subType": "ProductItemResourceCarousel",
+                "subType": "AreaResourceHero",
                 "typeKey": "image",
                 "url": "https://res.cloudinary.com/yitpre/image/upload/{param}/v1616817117/305219.jpg"
+            }
+        ]
+    },
+    {
+        "marketSegmentKey": "czhousing",
+        "areaId": "citys59n-f76p-86od-s65f72qpg96t",
+        "areaTypeKey": "GeolocationCity",
+        "longTitle": {
+            "localizedStrings": {
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "cs": "Nové byty na prodej v Praze",
+                "pl": "",
+                "fi": "Praha",
+                "et": "",
+                "sk": "",
+                "tt-RU": "",
+                "sv-FI": "",
+                "en": "New Apartments for sale in Prague"
+            }
+        },
+        "shortTitle": {
+            "localizedStrings": {
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "cs": "Praha",
+                "pl": "",
+                "fi": "Praha",
+                "et": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": "",
+                "en": "Prague"
+            }
+        },
+        "marketingName": {
+            "localizedStrings": {
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "cs": "Praha",
+                "pl": "",
+                "fi": "Praha",
+                "et": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": "",
+                "en": "Prague"
+            }
+        },
+        "areaCoordinatesLatitude": 50.0595854,
+        "areaCoordinatesLongitude": 14.325543,
+        "marketingHeadLine": {
+            "localizedStrings": {
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "cs": "Nové byty na prodej v Praze",
+                "pl": "",
+                "fi": "Praha",
+                "et": "",
+                "sk": "",
+                "tt-RU": "",
+                "sv-FI": "",
+                "en": "New Apartments for sale in Prague"
+            }
+        },
+        "marketingDescription": {
+            "localizedStrings": {
+                "ru": "",
+                "lv": "",
+                "lt": "",
+                "cs": "Hlavní město patří dlouhodobě k nejlepším místům pro život v České republice. Dostatek škol, školek, zdravotnických zařízení a obchodů, řadí naší metropoli k nejžádanějším lokalitám pro nové byty. Praha nabízí i široké kulturní vyžití v divadlech, kinech nebo hudebních klubech a to vše se skvělou dostupností MHD.\n\nKoupit nový byt v Praze je dobrá investice. Ceny pražských nemovitostí prakticky neustále rostou a byt se vám zhodnotí v případě bydlení, ale i pokud se jej rozhodnete pronajímat. Finančně nejzajímavější jsou novostavby, které nabízejí moderní a často luxusní nové byty v Praze na prodej v zajímavých částech metropole, která má stále mnoho lokalit nejen na okraji, ale i ve vnějším centru, kde se staví nové byty za zajímavé ceny.\n\nVnější centrum metropole je skvělým místem pro život. Do středu města se dostanete pěšky nebo tramvají během pár minut, ale přesto bydlíte v zeleni a klidu. Díky propracovanému systému pražské hromadné dopravy se nemusíte bát bydlení ani v okrajových částech metropole. Ve dne vás za pár minut do centra dopraví metro, návrat z koncertu zvládnete některým z nočních autobusů.",
+                "pl": "",
+                "fi": "Praha",
+                "et": "",
+                "sk": "",
+                "tt-RU": "",
+                "sv-FI": "",
+                "en": "The capital has long been one of the best places to live in the Czech Republic. There are plenty of schools, kindergartens, health facilities and shops, making the Czech capital one of the most sought-after locations for new apartments. Prague also offers great cultural opportunities at its many theatres, cinemas and music clubs, all with great access by public transport.\nBuying an apartment in Prague is a good investment. Property prices in Prague are almost continually on the rise, meaning that the value of your apartment will increase whether you decide to live there yourself or rent it out. New-builds are the most attractive in terms of finance. Prague is still able to offer plenty of locations on the edge of the city, and in the extended centre, where new apartments are being built at attractive prices.\nThe extended centre of the city is a great place for life. You can reach the heart of the capital on foot or by tram in just a few short minutes, while at the same time living in an environment of greenery, peace and quiet. The excellent Prague public transport system means that you need have no fears about living in more outlying parts of the city. You can reach the centre by Metro in just a few minutes, or head home after a concert using one of the city's night bus services. YIT offers new apartments for sale in the attractive Prague areas in own projects."
+            }
+        },
+        "areaLocality": {
+            "localizedStrings": {
+                "cs": "Praha",
+                "en": "Prague",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandingLocationTitle": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Area location title",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandingLocationAdvantage1": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Area location advantage 1",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandingLocationAdvantage2": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Area location advantage 2",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandingLocationAdvantage3": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Area location advantage 3",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandingLocationAdvantage4": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Area location advantage 4",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandIconTitle1": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Brand Icon Title 1",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandIconTitle2": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Brand Icon Title 2",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandIconTitle3": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Brand Icon Title 3",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaBrandIconTitle4": {
+            "localizedStrings": {
+                "cs": "",
+                "en": "Brand Icon Title 4",
+                "et": "",
+                "fi": "",
+                "lv": "",
+                "lt": "",
+                "pl": "",
+                "ru": "",
+                "sk": "",
+                "sv-FI": "",
+                "tt-RU": ""
+            }
+        },
+        "areaPublish": {
+            "en": "English",
+            "cs": "Czech"
+        },
+        "areaPublishFlag": true,
+        "cmsUrl": "https://es-cz.preprod.yitgroup.com/prodej-bytu/praha",
+        "campaigns": [],
+        "resources": [
+            {
+                "index": 0,
+                "subType": "AreaResourceHero",
+                "typeKey": "image",
+                "url": "https://res.cloudinary.com/yitpre/image/upload/{param}/v1489992194/14357.jpg"
             }
         ]
     }
