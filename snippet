@@ -1,0 +1,427 @@
+<style>
+    :root {
+      color-scheme: light dark;
+      supported-color-schemes: light dark;
+    }
+  </style>
+  <style type="text/css">
+  #outlook a {padding:0;}
+  body[yahoo]{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
+  .ExternalClass {width:100%;}
+  .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}
+  table { border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0;empty-cells:show; }
+  #MessageViewBody { width: 100vw !important; min-width: 100vw !important; padding: 0 !important; margin: 0 !important; zoom: 1 !important; }
+  #MessageViewBody a { color: inherit; font-size: inherit; font-family: inherit; font-weight: inherit; line-height: inherit; }
+  .faux-absolute{
+    max-height:0;
+    position:relative;
+    opacity:0.999;
+    }
+    .faux-position{
+    margin-top:0;
+    margin-left:20%;
+    display:inline-block;
+    text-align: center;
+    }
+    body[data-outlook-cycle] .image{
+    width:300px;
+    }
+  </style>
+  <style type="text/css">
+    @media only screen and (max-width: 414px)  {
+      .reset { width: 100% !important; height: auto !important; }
+      .hide { display: none !important; }
+      .over-mob { max-height:166px !important; }
+      .hero-textbox { width: 80% !important;}
+      .left { text-align: left !important; }
+    }
+  </style>
+
+
+<script runat="server">
+  Platform.Load("Core","1.1.1");
+  function debugValue(description, value) {
+        Write(description + ': ' + (typeof value == 'object' ? Stringify(value) : value) + '<br><br>');
+    };
+  try{
+</script>
+
+<script runat="server" language="Ampscript"> 
+     set @country = 'fi'
+     set @leadId = '00Q5E00000881qiUAA'
+    
+     var @rows,@row,@rowcount,@i
+     var @firstRow, @secondRow, @thirdRow
+     set @rows=LookupRows('ENT.Recommendation__c_Salesforce','Lead__c',@leadId, 'Is_Active__c', 'true')
+     set @rowcount = ROWCOUNT(@rows)
+     IF @rowcount > 0 THEN
+
+    for @k=1 to 3 do                           
+    for @i = 1 to @rowCount do
+        set @wasAny = false
+                              
+        set @row = row(@rows, @i)
+        set @productRecommendationId = FIELD(@row, "Product_Recommended__c"))
+        set @projectRecommendationId = FIELD(@row, "Project_Recommended__c"))
+        set @areaRecommendationId = FIELD(@row, "Marketing_Location_Recommended__c"))
+        IF NOT EMPTY(@productRecommendationId) AND @k==3 THEN
+                     
+         
+     set @recommendationRows = LookupRows('ENT.Product_Recommended__c_Salesforce','Id',@productRecommendationId)
+     IF ROWCOUNT(@recommendationRows) > 0 THEN
+       set @wasAny = true
+       set @recommendedProductId = FIELD(Row(@recommendationRows, 1), "Recommended_Product__c")
+     ENDIF
+        
+     set @productRows = LookupRows('ENT.Product2_Salesforce_2','Id',@recommendedProductId)
+     IF ROWCOUNT(@productRows) > 0 THEN
+       set @recommendedProductRow = Row(@productRows, 1)
+       
+       set @apartmentNumber = FIELD(@recommendedProductRow, "Apartment_Number__c")  
+       set @apartmentType = FIELD(@recommendedProductRow, "Apartment_Type__c")      
+       set @apartmentSize = FIELD(@recommendedProductRow, "PRIMA_Apartment_Size__c")      
+       /*IF NOT EMPTY(@apartmentSize) THEN set @apartmentSize = REPLACE(@apartmentSize, ".", ",") ENDIF*/
+       IF NOT EMPTY(@apartmentSize) THEN set @apartmentSize = CONCAT(@apartmentSize, " m²") ENDIF
+                                                                  
+       set @images = LookupRows('ENT.Image__c_Salesforce','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel","Index__c", 0)
+       IF ROWCOUNT(@images) > 0 THEN
+         set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel","Index__c", 0), 1), "URL__c")
+         set @imageURL = replace(@imageURL, "{param}", "w_450")
+                                   
+         set @redirectURL = FIELD(@recommendedProductRow, "URL__c")
+         IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF            
+       ENDIF
+     ENDIF
+     
+
+    set @subProjectId = FIELD(@recommendedProductRow, "Project__c")  
+    set @subProjectRows = LookupRows('ENT.Project_TT__c_Salesforce_2','Id',@subProjectId)
+    IF ROWCOUNT(@subProjectRows) > 0 THEN
+      set @recommendedProjectId = FIELD(Row(@subProjectRows, 1), 'YIT_Original_Project__c')  
+      set @projectRows = LookupRows('ENT.Project_TT__c_Salesforce_2','Id',@recommendedProjectId)
+      IF ROWCOUNT(@projectRows) > 0 THEN
+       set @projectRow = Row(@projectRows, 1)   
+       set @projectShortTitle = FIELD(@projectRow, "Title__c")        
+       set @projectDistrictName = FIELD(@projectRow, "District_Name__c")   
+       set @status = FIELD(@projectRow, "Web_Project_Status__c")
+       set @completionDate = FIELD(@projectRow, "Completion_Date__c")
+       IF NOT EMPTY (@completionDate) THEN set @completionDate = Format(@completionDate,"d.MM.yyyy") ENDIF
+      ENDIF            
+    ENDIF            
+    
+    var @translatedStatus
+    IF @country == 'fi' THEN
+         if @status == 'Planned' THEN
+            set @translatedStatus = 'Suunnitteilla'
+         ENDIF
+         if @status == 'PreMarketing' THEN
+            set @translatedStatus = 'Ennakkomarkkinoinnissa'
+         ENDIF
+         if @status == 'ReadyToMoveIn' THEN
+            set @translatedStatus = 'Muuttovalmis'
+         ENDIF
+         if @status == 'ToBeReady' THEN
+            set @translatedStatus = 'Arvioitu valmistuminen'
+         ENDIF
+    ENDIF
+    IF @country == 'cz' THEN
+          if @status == 'Planned' THEN
+            set @translatedStatus = 'Plánovaný'
+         ENDIF
+         if @status == 'PreMarketing' THEN
+            set @translatedStatus = 'Předprodej'
+         ENDIF
+         if @status == 'ReadyToMoveIn' THEN
+            set @translatedStatus = 'K nastěhování'
+         ENDIF
+         if @status == 'ToBeReady' THEN
+            set @translatedStatus = 'K dokončení'
+         ENDIF
+    ENDIF
+    IF @country == 'sk' THEN
+         if @status == 'Planned' THEN
+            set @translatedStatus = 'Plánovaný'
+         ENDIF
+         if @status == 'PreMarketing' THEN
+            set @translatedStatus = 'Predpredaj'
+         ENDIF
+         if @status == 'ReadyToMoveIn' THEN
+            set @translatedStatus = 'K nasťahovanie'
+         ENDIF
+         if @status == 'ToBeReady' THEN
+            set @translatedStatus = 'K dokončenie'
+         ENDIF
+    ENDIF
+    
+    IF @status == 'ToBeReady' THEN
+     set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
+    ENDIF                                 
+    
+    set @secondRow = @translatedStatus
+    set @thirdRow = CONCAT(@apartmentNumber)
+    IF NOT EMPTY(@apartmentType) THEN set @thirdRow = CONCAT(@thirdRow, ", ", @apartmentType) ENDIF
+    IF NOT EMPTY(@apartmentSize) THEN set @thirdRow = CONCAT(@thirdRow, ", ", @apartmentSize) ENDIF
+
+    set @firstRowWeigth = 'light'
+    set @lastRowWeight = 'bold'
+
+    var @buttonText
+    IF @country == 'fi' THEN
+         set @buttonText = 'Katso asunnon lisätiedot'
+    ENDIF
+    IF @country == 'cz' THEN
+         set @buttonText = 'Zobrazit detail bytu'
+    ENDIF
+    IF @country == 'sk' THEN
+         set @buttonText = 'Zobraziť detail bytu'
+    ENDIF
+
+    ENDIF
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  IF NOT EMPTY(@projectRecommendationId) AND @k==2 THEN
+   set @wasAny = true
+   set @recommendedProjectId = FIELD(Row(LookupRows('ENT.Project_Recommended__c_Salesforce','Id',@projectRecommendationId), 1), "Recommended_Project__c")
+         set @recommendedProjectRow = Row(LookupRows('ENT.Project_TT__c_Salesforce_2','Id',@recommendedProjectId), 1)
+  
+         set @marketingHeadline = FIELD(@recommendedProjectRow, "Project_Marketing_Headline__c")         
+         set @status = FIELD(@recommendedProjectRow, "Web_Project_Status__c")
+         set @completionDate = FIELD(@recommendedProjectRow, "Completion_Date__c")
+         IF NOT EMPTY (@completionDate) THEN set @completionDate = Format(@completionDate,"d.MM.yyyy") ENDIF
+         set @shortTitle = FIELD(@recommendedProjectRow, "Title__c")
+         set @districtName = FIELD(@recommendedProjectRow, "District_Name__c")
+         
+         set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero","Index__c", 0), 1), "URL__c")
+         set @imageURL = replace(@imageURL, "{param}", "w_450")
+                                  
+         set @redirectURL = FIELD(@recommendedProjectRow, "URL__c")
+         IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
+  
+          var @translatedStatus
+          IF @country == 'fi' THEN
+               if @status == 'Planned' THEN
+                  set @translatedStatus = 'Suunnitteilla'
+               ENDIF
+               if @status == 'PreMarketing' THEN
+                  set @translatedStatus = 'Ennakkomarkkinoinnissa'
+               ENDIF
+               if @status == 'ReadyToMoveIn' THEN
+                  set @translatedStatus = 'Muuttovalmis'
+               ENDIF
+               if @status == 'ToBeReady' THEN
+                  set @translatedStatus = 'Arvioitu valmistuminen'
+               ENDIF
+          ENDIF
+          IF @country == 'cz' THEN
+                if @status == 'Planned' THEN
+                  set @translatedStatus = 'Plánovaný'
+               ENDIF
+               if @status == 'PreMarketing' THEN
+                  set @translatedStatus = 'Předprodej'
+               ENDIF
+               if @status == 'ReadyToMoveIn' THEN
+                  set @translatedStatus = 'K nastěhování'
+               ENDIF
+               if @status == 'ToBeReady' THEN
+                  set @translatedStatus = 'K dokončení'
+               ENDIF
+          ENDIF
+          IF @country == 'sk' THEN
+               if @status == 'Planned' THEN
+                  set @translatedStatus = 'Plánovaný'
+               ENDIF
+               if @status == 'PreMarketing' THEN
+                  set @translatedStatus = 'Predpredaj'
+               ENDIF
+               if @status == 'ReadyToMoveIn' THEN
+                  set @translatedStatus = 'K nasťahovanie'
+               ENDIF
+               if @status == 'ToBeReady' THEN
+                  set @translatedStatus = 'K dokončenie'
+               ENDIF
+          ENDIF
+
+          IF @status == 'ToBeReady' THEN
+           set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
+          ENDIF                                 
+
+         set @firstRow = CONCAT(@shortTitle, " ", @districtName)
+         set @secondRow = @translatedStatus
+         set @thirdRow = @marketingHeadline
+  
+         set @firstRowWeigth = 'light'
+         set @lastRowWeight = 'bold'
+  
+        var @buttonText
+        IF @country == 'fi' THEN
+             set @buttonText = 'Tutustu koteihin'
+        ENDIF
+        IF @country == 'cz' THEN
+             set @buttonText = 'Zobrazit detail projektu'
+        ENDIF
+        IF @country == 'sk' THEN
+             set @buttonText = 'Zobraziť detail projektu'
+        ENDIF
+  ENDIF
+  
+  
+               
+  IF NOT EMPTY(@areaRecommendationId) AND @k==1 THEN
+    set @wasAny = true
+    set @recommendedAreaId = FIELD(Row(LookupRows('ENT.Marketing_Location_Recommended__c_Salesforce','Id',@areaRecommendationId), 1), "Recommended_Location__c")
+         set @recommendedAreaRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','Id',@recommendedAreaId), 1)
+  
+         
+         set @description = FIELD(@recommendedAreaRow, "Description__c")                    
+         SET @descriptionRows = BuildRowSetFromString(@description, ".")
+         SET @descriptionRowCount = rowcount(@descriptionRows)
+         if @descriptionRowCount > 0 THEN                                
+           SET @descriptionSentence1 = Field(Row(@descriptionRows, 1), 1)
+         ENDIF
+         
+         set @marketingName = FIELD(@recommendedAreaRow, "Marketing_Name__c")
+
+         set @cityId = FIELD(@recommendedAreaRow, "City_Id__c")
+         set @districtId = FIELD(@recommendedAreaRow, "District_Id__c")
+  
+         set @cityRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@cityId), 1)
+         set @districtRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@districtId), 1)
+  
+         set @cityName = FIELD(@cityRow, "Marketing_Name__c")
+         set @districtName = FIELD(@districtRow, "Marketing_Name__c")
+
+         set @firstRow = @marketingName
+         IF NOT EMPTY(@districtName) THEN set @firstRow = CONCAT(@firstRow, " - ", @districtName) ENDIF   
+         IF NOT EMPTY(@cityName) THEN set @firstRow = CONCAT(@firstRow, " - ", @cityName) ENDIF    
+         
+         set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero","Index__c", 0), 1), "URL__c")
+         set @imageURL = replace(@imageURL, "{param}", "w_450")
+                                  
+         set @redirectURL = FIELD(@recommendedAreaRow, "URL__c")
+         IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
+  
+         set @firstRow = @firstRow
+         set @secondRow = ''
+         set @thirdRow = @descriptionSentence1
+  
+         set @firstRowWeigth = 'bold'
+         set @lastRowWeight = 'light'
+  
+        var @buttonText
+        IF @country == 'fi' THEN
+             set @buttonText = 'Lue lisää asuinalueesta'
+        ENDIF
+        IF @country == 'cz' THEN
+             set @buttonText = 'Zobrazit detail oblasti'
+        ENDIF
+        IF @country == 'sk' THEN
+             set @buttonText = 'Zobraziť detail oblasti'
+        ENDIF     
+  ENDIF
+  
+ if @wasAny == true THEN
+</script>
+
+<br><br>debug
+
+recommendedProductId: %%=v(@recommendedProductId)=%%<br>
+redirectURL: %%=v(@redirectURL)=%%<br>
+imageURL: %%=v(@imageURL)=%%<br>
+
+firstRow: %%=v(@firstRow)=%%<br>
+secondRow: %%=v(@secondRow)=%%<br>
+thirdRow: %%=v(@thirdRow)=%%<br>
+
+
+ <div role="article" aria-roledescription="email" aria-label="email name" lang="en" style="font-size:1rem; ">
+    <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">
+      
+      <div style="padding-top:10px; padding-right: 15px; padding-left:15px; width:70%; margin:auto;">
+        <div style="font-family: 'Helvetica Neue'; color: #5b727c; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
+                                                          
+     %%=v(@firstRow)=%%
+</div><div style="font-family: 'Helvetica Neue'; color: #5b727c; font-weight: light; text-align:center; width: 100%;">
+                                                          
+     %%=v(@secondRow)=%%
+</div><div style="padding-top: 15px;font-family: 'Helvetica Neue'; color: #5b727c; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
+                                                          
+     %%=v(@thirdRow)=%%
+</div>                   
+      </div>
+      
+    <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td valign="top">
+        <div class="over-mob" style="max-height:45px; margin: 0 auto; text-align: center;">
+      <table role="presentation" class="faux-absolute reset over-mob" align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="position:relative; opacity:0.999;">
+      <tr>
+        <td valign="top">
+
+
+          <table role="presentation" class="hero-textbox" border="0" cellpadding="0" cellspacing="0" width="75%" align="center">
+            <tr>
+              <td valign="top" style="padding-top: 10px;">
+                <div style="height: 15px; background-color:white;">
+                     
+ </div>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="80%" align="center">
+                <tr>
+                  <td height="38" align="center">
+                    <div style="font-size: 16px; font-family: 'Helvetica Neue'; color: #DB4D69; text-align: center; text-decoration: none; background-color: #FFFFFF; border: 1px solid #DB4D69; text-decoration: none; text-align:center; white-space: nowrap; padding-top: 8px; padding-bottom: 8px; padding-left: 6px; padding-right: 6px; width:260px; min-width:200px; font-weight: bold; display: block; min-height: 24px;" target="_blank">
+                       %%=v(@buttonText)=%%
+                    </div>
+                  </td>
+                </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td height="30" style="margin: 0;font-size:0px; mso-line-height-rule: exactly; line-height: 1px; white-space-collapse:collapse; max-height:30px;" valign="top">
+                &nbsp;
+              </td>
+            </tr>
+          </table>
+<!--[if mso]>
+  </v:textbox>
+  </v:rect>
+<![endif]-->
+        </td>
+      </tr>
+      </table>
+          </div>
+        <div style="width: 100%;text-align: center;">
+       <img class="reset" src="%%=v(@imageURL)=%%" alt="" style="vertical-align: middle;" border="0"> 
+                                                       <!-- <img class="reset" src="https://res.cloudinary.com/yitpre/image/upload/w_450/v1616814926/263904.jpg" alt="" style="vertical-align: middle; padding-left: 15px; padding-right: 15px;" border="0">-->
+      </div>
+      </td>
+    </tr>
+    </table>
+  </a>
+</div>
+
+<script runat="server" language="Ampscript"> 
+   ENDIF
+     NEXT @i 
+    NEXT @k 
+    ELSE
+     OutputLine("No records founds")
+   ENDIF
+</script>
+
+<script runat="server">
+    }catch(e){
+      debugValue(e);
+    }
+</script>
