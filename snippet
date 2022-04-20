@@ -47,11 +47,17 @@
 </script>
 
 <script runat="server" language="Ampscript"> 
-     set @country = 'fi'
+     set @country = 'sk'
+  
+     IF EMPTY (@country) THEN
+        @country = 'en'
+     ENDIF
+               
      set @leadId = '00Q5E00000881qiUAA'
     
      var @rows,@row,@rowcount,@i
      var @firstRow, @secondRow, @thirdRow
+     set @wasAtleastOneRecommendation = false
      set @rows=LookupRows('ENT.Recommendation__c_Salesforce','Lead__c',@leadId, 'Is_Active__c', 'true')
      set @rowcount = ROWCOUNT(@rows)
      IF @rowcount > 0 THEN
@@ -69,15 +75,25 @@
          
      set @recommendationRows = LookupRows('ENT.Product_Recommended__c_Salesforce','Id',@productRecommendationId)
      IF ROWCOUNT(@recommendationRows) > 0 THEN
-       set @wasAny = true
        set @recommendedProductId = FIELD(Row(@recommendationRows, 1), "Recommended_Product__c")
      ENDIF
         
      set @productRows = LookupRows('ENT.Product2_Salesforce_2','Id',@recommendedProductId)
      IF ROWCOUNT(@productRows) > 0 THEN
+       set @wasAny = true
+       set @wasAtleastOneRecommendation = true
+                 
        set @recommendedProductRow = Row(@productRows, 1)
        
-       set @apartmentNumber = FIELD(@recommendedProductRow, "Apartment_Number__c")  
+       set @apartmentNumber = FIELD(@recommendedProductRow, "Apartment_Number__c") 
+                                    
+       set @apartmentType = FIELD(@recommendedProductRow, 'Apartment_Type__c')                             
+       set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Product__c',@recommendedProductId,'Field__c','apartmentType','Language__c', @country)
+       IF ROWCOUNT(@translationQuery) > 0 THEN
+         set @translationRow = Row(@translationQuery, 1)  
+         set @apartmentType = FIELD(@translationRow, 'Content__c')
+       ENDIF
+                                      
        set @apartmentType = FIELD(@recommendedProductRow, "Apartment_Type__c")      
        set @apartmentSize = FIELD(@recommendedProductRow, "PRIMA_Apartment_Size__c")      
        /*IF NOT EMPTY(@apartmentSize) THEN set @apartmentSize = REPLACE(@apartmentSize, ".", ",") ENDIF*/
@@ -101,8 +117,22 @@
       set @projectRows = LookupRows('ENT.Project_TT__c_Salesforce_2','Id',@recommendedProjectId)
       IF ROWCOUNT(@projectRows) > 0 THEN
        set @projectRow = Row(@projectRows, 1)   
-       set @projectShortTitle = FIELD(@projectRow, "Title__c")        
-       set @projectDistrictName = FIELD(@projectRow, "District_Name__c")   
+  
+       set @projectShortTitle = FIELD(@projectRow, "Title__c")                     
+       set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Project__c',@recommendedProjectId,'Field__c','shortTitle','Language__c', @country)
+       IF ROWCOUNT(@translationQuery) > 0 THEN
+         set @translationRow = Row(@translationQuery, 1)  
+         set @projectShortTitle = FIELD(@translationRow, 'Content__c')
+       ENDIF
+       
+       
+       set @projectDistrictName = FIELD(@projectRow, "District_Name__c")
+       set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Project__c',@recommendedProjectId,'Field__c','district','Language__c', @country)
+       IF ROWCOUNT(@translationQuery) > 0 THEN
+         set @translationRow = Row(@translationQuery, 1)  
+         set @projectDistrictName = FIELD(@translationRow, 'Content__c')
+       ENDIF
+                                        
        set @status = FIELD(@projectRow, "Web_Project_Status__c")
        set @completionDate = FIELD(@projectRow, "Completion_Date__c")
        IF NOT EMPTY (@completionDate) THEN set @completionDate = Format(@completionDate,"d.MM.yyyy") ENDIF
@@ -188,144 +218,205 @@
   
   
   IF NOT EMPTY(@projectRecommendationId) AND @k==2 THEN
-   set @wasAny = true
-   set @recommendedProjectId = FIELD(Row(LookupRows('ENT.Project_Recommended__c_Salesforce','Id',@projectRecommendationId), 1), "Recommended_Project__c")
-         set @recommendedProjectRow = Row(LookupRows('ENT.Project_TT__c_Salesforce_2','Id',@recommendedProjectId), 1)
-  
-         set @marketingHeadline = FIELD(@recommendedProjectRow, "Project_Marketing_Headline__c")         
-         set @status = FIELD(@recommendedProjectRow, "Web_Project_Status__c")
-         set @completionDate = FIELD(@recommendedProjectRow, "Completion_Date__c")
-         IF NOT EMPTY (@completionDate) THEN set @completionDate = Format(@completionDate,"d.MM.yyyy") ENDIF
-         set @shortTitle = FIELD(@recommendedProjectRow, "Title__c")
-         set @districtName = FIELD(@recommendedProjectRow, "District_Name__c")
-         
-         set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero","Index__c", 0), 1), "URL__c")
-         set @imageURL = replace(@imageURL, "{param}", "w_450")
-                                  
-         set @redirectURL = FIELD(@recommendedProjectRow, "URL__c")
-         IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
-  
-          var @translatedStatus
-          IF @country == 'fi' THEN
-               if @status == 'Planned' THEN
-                  set @translatedStatus = 'Suunnitteilla'
-               ENDIF
-               if @status == 'PreMarketing' THEN
-                  set @translatedStatus = 'Ennakkomarkkinoinnissa'
-               ENDIF
-               if @status == 'ReadyToMoveIn' THEN
-                  set @translatedStatus = 'Muuttovalmis'
-               ENDIF
-               if @status == 'ToBeReady' THEN
-                  set @translatedStatus = 'Arvioitu valmistuminen'
-               ENDIF
-          ENDIF
-          IF @country == 'cz' THEN
-                if @status == 'Planned' THEN
-                  set @translatedStatus = 'Plánovaný'
-               ENDIF
-               if @status == 'PreMarketing' THEN
-                  set @translatedStatus = 'Předprodej'
-               ENDIF
-               if @status == 'ReadyToMoveIn' THEN
-                  set @translatedStatus = 'K nastěhování'
-               ENDIF
-               if @status == 'ToBeReady' THEN
-                  set @translatedStatus = 'K dokončení'
-               ENDIF
-          ENDIF
-          IF @country == 'sk' THEN
-               if @status == 'Planned' THEN
-                  set @translatedStatus = 'Plánovaný'
-               ENDIF
-               if @status == 'PreMarketing' THEN
-                  set @translatedStatus = 'Predpredaj'
-               ENDIF
-               if @status == 'ReadyToMoveIn' THEN
-                  set @translatedStatus = 'K nasťahovanie'
-               ENDIF
-               if @status == 'ToBeReady' THEN
-                  set @translatedStatus = 'K dokončenie'
-               ENDIF
-          ENDIF
+   
+   set @recommendationRows = LookupRows('ENT.Project_Recommended__c_Salesforce','Id',@projectRecommendationId)
+   IF ROWCOUNT(@recommendationRows) > 0 THEN
+     set @recommendedProjectId = FIELD(Row(@recommendationRows, 1), "Recommended_Project__c")
+           set @projectRows = LookupRows('ENT.Project_TT__c_Salesforce_2','Id',@recommendedProjectId)
+           IF ROWCOUNT(@projectRows) > 0 THEN 
+             set @wasAny = true
+             set @wasAtleastOneRecommendation = true
+                       
+             set @recommendedProjectRow = Row(@projectRows, 1)
 
-          IF @status == 'ToBeReady' THEN
-           set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
-          ENDIF                                 
+             set @marketingHeadline = FIELD(@recommendedProjectRow, "Project_Marketing_Headline__c")
+             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Project__c',@recommendedProjectId,'Field__c','marketingHeadline','Language__c', @country)
+           IF ROWCOUNT(@translationQuery) > 0 THEN
+             set @translationRow = Row(@translationQuery, 1)  
+             set @marketingHeadline = FIELD(@translationRow, 'Content__c')
+           ENDIF
 
-         set @firstRow = CONCAT(@shortTitle, " ", @districtName)
-         set @secondRow = @translatedStatus
-         set @thirdRow = @marketingHeadline
-  
-         set @firstRowWeigth = 'light'
-         set @lastRowWeight = 'bold'
-  
-        var @buttonText
-        IF @country == 'fi' THEN
-             set @buttonText = 'Tutustu koteihin'
+             set @status = FIELD(@recommendedProjectRow, "Web_Project_Status__c")
+             set @completionDate = FIELD(@recommendedProjectRow, "Completion_Date__c")
+             IF NOT EMPTY (@completionDate) THEN set @completionDate = Format(@completionDate,"d.MM.yyyy") ENDIF
+
+             set @shortTitle = FIELD(@recommendedProjectRow, "Title__c")
+             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Project__c',@recommendedProjectId,'Field__c','shortTitle','Language__c', @country)
+           IF ROWCOUNT(@translationQuery) > 0 THEN
+             set @translationRow = Row(@translationQuery, 1)  
+             set @shortTitle = FIELD(@translationRow, 'Content__c')
+           ENDIF
+
+             set @districtName = FIELD(@recommendedProjectRow, "District_Name__c")
+             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Project__c',@recommendedProjectId,'Field__c','district','Language__c', @country)
+           IF ROWCOUNT(@translationQuery) > 0 THEN
+             set @translationRow = Row(@translationQuery, 1)  
+             set @districtName = FIELD(@translationRow, 'Content__c')
+           ENDIF
+
+             set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero","Index__c", 0), 1), "URL__c")
+             set @imageURL = replace(@imageURL, "{param}", "w_450")
+
+             set @redirectURL = FIELD(@recommendedProjectRow, "URL__c")
+             IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
+
+              var @translatedStatus
+              IF @country == 'fi' THEN
+                   if @status == 'Planned' THEN
+                      set @translatedStatus = 'Suunnitteilla'
+                   ENDIF
+                   if @status == 'PreMarketing' THEN
+                      set @translatedStatus = 'Ennakkomarkkinoinnissa'
+                   ENDIF
+                   if @status == 'ReadyToMoveIn' THEN
+                      set @translatedStatus = 'Muuttovalmis'
+                   ENDIF
+                   if @status == 'ToBeReady' THEN
+                      set @translatedStatus = 'Arvioitu valmistuminen'
+                   ENDIF
+              ENDIF
+              IF @country == 'cz' THEN
+                    if @status == 'Planned' THEN
+                      set @translatedStatus = 'Plánovaný'
+                   ENDIF
+                   if @status == 'PreMarketing' THEN
+                      set @translatedStatus = 'Předprodej'
+                   ENDIF
+                   if @status == 'ReadyToMoveIn' THEN
+                      set @translatedStatus = 'K nastěhování'
+                   ENDIF
+                   if @status == 'ToBeReady' THEN
+                      set @translatedStatus = 'K dokončení'
+                   ENDIF
+              ENDIF
+              IF @country == 'sk' THEN
+                   if @status == 'Planned' THEN
+                      set @translatedStatus = 'Plánovaný'
+                   ENDIF
+                   if @status == 'PreMarketing' THEN
+                      set @translatedStatus = 'Predpredaj'
+                   ENDIF
+                   if @status == 'ReadyToMoveIn' THEN
+                      set @translatedStatus = 'K nasťahovanie'
+                   ENDIF
+                   if @status == 'ToBeReady' THEN
+                      set @translatedStatus = 'K dokončenie'
+                   ENDIF
+              ENDIF
+
+              IF @status == 'ToBeReady' THEN
+               set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
+              ENDIF                                 
+
+             set @firstRow = CONCAT(@shortTitle, " ", @districtName)
+             set @secondRow = @translatedStatus
+             set @thirdRow = @marketingHeadline
+
+             set @firstRowWeigth = 'light'
+             set @lastRowWeight = 'bold'
+
+            var @buttonText
+            IF @country == 'fi' THEN
+                 set @buttonText = 'Tutustu koteihin'
+            ENDIF
+            IF @country == 'cz' THEN
+                 set @buttonText = 'Zobrazit detail projektu'
+            ENDIF
+            IF @country == 'sk' THEN
+                 set @buttonText = 'Zobraziť detail projektu'
+            ENDIF
         ENDIF
-        IF @country == 'cz' THEN
-             set @buttonText = 'Zobrazit detail projektu'
-        ENDIF
-        IF @country == 'sk' THEN
-             set @buttonText = 'Zobraziť detail projektu'
-        ENDIF
-  ENDIF
+      ENDIF
+     ENDIF
   
   
                
   IF NOT EMPTY(@areaRecommendationId) AND @k==1 THEN
-    set @wasAny = true
-    set @recommendedAreaId = FIELD(Row(LookupRows('ENT.Marketing_Location_Recommended__c_Salesforce','Id',@areaRecommendationId), 1), "Recommended_Location__c")
-         set @recommendedAreaRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','Id',@recommendedAreaId), 1)
-  
-         
-         set @description = FIELD(@recommendedAreaRow, "Description__c")                    
-         SET @descriptionRows = BuildRowSetFromString(@description, ".")
-         SET @descriptionRowCount = rowcount(@descriptionRows)
-         if @descriptionRowCount > 0 THEN                                
-           SET @descriptionSentence1 = Field(Row(@descriptionRows, 1), 1)
-         ENDIF
-         
-         set @marketingName = FIELD(@recommendedAreaRow, "Marketing_Name__c")
+    set @recommendationRows = LookupRows('ENT.Marketing_Location_Recommended__c_Salesforce','Id',@areaRecommendationId)
+    IF ROWCOUNT(@recommendationRows) > 0 THEN 
+      set @recommendedAreaId = FIELD(Row(@recommendationRows, 1), "Recommended_Location__c")
+           set @areaRows = LookupRows('ENT.Marketing_Location__c_Salesforce','Id',@recommendedAreaId)
+           IF ROWCOUNT(@areaRows) > 0 THEN 
+             set @wasAny = true       
+             set @wasAtleastOneRecommendation = true
+                       
+             set @recommendedAreaRow = Row(@areaRows, 1)
 
-         set @cityId = FIELD(@recommendedAreaRow, "City_Id__c")
-         set @districtId = FIELD(@recommendedAreaRow, "District_Id__c")
-  
-         set @cityRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@cityId), 1)
-         set @districtRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@districtId), 1)
-  
-         set @cityName = FIELD(@cityRow, "Marketing_Name__c")
-         set @districtName = FIELD(@districtRow, "Marketing_Name__c")
 
-         set @firstRow = @marketingName
-         IF NOT EMPTY(@districtName) THEN set @firstRow = CONCAT(@firstRow, " - ", @districtName) ENDIF   
-         IF NOT EMPTY(@cityName) THEN set @firstRow = CONCAT(@firstRow, " - ", @cityName) ENDIF    
-         
-         set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero","Index__c", 0), 1), "URL__c")
-         set @imageURL = replace(@imageURL, "{param}", "w_450")
-                                  
-         set @redirectURL = FIELD(@recommendedAreaRow, "URL__c")
-         IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
-  
-         set @firstRow = @firstRow
-         set @secondRow = ''
-         set @thirdRow = @descriptionSentence1
-  
-         set @firstRowWeigth = 'bold'
-         set @lastRowWeight = 'light'
-  
-        var @buttonText
-        IF @country == 'fi' THEN
-             set @buttonText = 'Lue lisää asuinalueesta'
+             set @description = FIELD(@recommendedAreaRow, "Description__c")
+             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@recommendedAreaId,'Field__c','marketingDescription','Language__c', @country)
+           IF ROWCOUNT(@translationQuery) > 0 THEN
+             set @translationRow = Row(@translationQuery, 1)  
+             set @description = FIELD(@translationRow, 'Content__c')
+           ENDIF
+
+             SET @descriptionRows = BuildRowSetFromString(@description, ".")
+             SET @descriptionRowCount = rowcount(@descriptionRows)
+             if @descriptionRowCount > 0 THEN                                
+               SET @descriptionSentence1 = Field(Row(@descriptionRows, 1), 1)
+             ENDIF
+
+             set @marketingName = FIELD(@recommendedAreaRow, "Marketing_Name__c")
+             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@recommendedAreaId,'Field__c','marketingName','Language__c', @country)
+           IF ROWCOUNT(@translationQuery) > 0 THEN
+             set @translationRow = Row(@translationQuery, 1)  
+             set @marketingName = FIELD(@translationRow, 'Content__c')
+           ENDIF                           
+
+             set @cityId = FIELD(@recommendedAreaRow, "City_Id__c")
+             set @districtId = FIELD(@recommendedAreaRow, "District_Id__c")
+
+             set @cityRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@cityId), 1)
+             set @districtRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@districtId), 1)
+
+             set @citySfId = FIELD(@cityRow, 'Id')
+             set @districtSfId = FIELD(@districtRow, 'Id')
+
+             set @cityName = FIELD(@cityRow, "Marketing_Name__c")
+             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@citySfId,'Field__c','marketingName','Language__c', @country)
+           IF ROWCOUNT(@translationQuery) > 0 THEN
+             set @translationRow = Row(@translationQuery, 1)  
+             set @cityName = FIELD(@translationRow, 'Content__c')
+           ENDIF    
+
+             set @districtName = FIELD(@districtRow, "Marketing_Name__c")
+             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@districtSfId,'Field__c','marketingName','Language__c', @country)
+           IF ROWCOUNT(@translationQuery) > 0 THEN
+             set @translationRow = Row(@translationQuery, 1)  
+             set @districtName = FIELD(@translationRow, 'Content__c')
+           ENDIF    
+
+
+             set @firstRow = @marketingName
+             IF NOT EMPTY(@districtName) THEN set @firstRow = CONCAT(@firstRow, " - ", @districtName) ENDIF   
+             IF NOT EMPTY(@cityName) THEN set @firstRow = CONCAT(@firstRow, " - ", @cityName) ENDIF    
+
+             set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero","Index__c", 0), 1), "URL__c")
+             set @imageURL = replace(@imageURL, "{param}", "w_450")
+
+             set @redirectURL = FIELD(@recommendedAreaRow, "URL__c")
+             IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
+
+             set @firstRow = @firstRow
+             set @secondRow = ''
+             set @thirdRow = @descriptionSentence1
+
+             set @firstRowWeigth = 'bold'
+             set @lastRowWeight = 'light'
+
+            var @buttonText
+            IF @country == 'fi' THEN
+                 set @buttonText = 'Lue lisää asuinalueesta'
+            ENDIF
+            IF @country == 'cz' THEN
+                 set @buttonText = 'Zobrazit detail oblasti'
+            ENDIF
+            IF @country == 'sk' THEN
+                 set @buttonText = 'Zobraziť detail oblasti'
+            ENDIF     
+          ENDIF
         ENDIF
-        IF @country == 'cz' THEN
-             set @buttonText = 'Zobrazit detail oblasti'
-        ENDIF
-        IF @country == 'sk' THEN
-             set @buttonText = 'Zobraziť detail oblasti'
-        ENDIF     
-  ENDIF
+      ENDIF
   
  if @wasAny == true THEN
 </script>
@@ -415,11 +506,15 @@ thirdRow: %%=v(@thirdRow)=%%<br>
    ENDIF
      NEXT @i 
     NEXT @k 
-    ELSE
-     OutputLine("No records founds")
+   ENDIF
+   
+   IF @wasAtleastOneRecommendation == false THEN
+     set @redirectURL = CONCAT("https://www.yit.", @country, "/")
+</script>
+<a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">Visit our webpage today!</a>
+<script runat="server" language="Ampscript"> 
    ENDIF
 </script>
-
 <script runat="server">
     }catch(e){
       debugValue(e);
