@@ -101,12 +101,12 @@
                                                                   
        set @images = LookupRows('ENT.Image__c_Salesforce','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel","Index__c", 0)
        IF ROWCOUNT(@images) > 0 THEN
-         set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel","Index__c", 0), 1), "URL__c")
-         set @imageURL = replace(@imageURL, "{param}", "w_450")
-                                   
-         set @redirectURL = FIELD(@recommendedProductRow, "URL__c")
-         IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF            
+         set @imageURL = FIELD(Row(@images, 1), "URL__c")
+         set @imageURL = replace(@imageURL, "{param}", "w_450")     
        ENDIF
+                                 
+       set @redirectURL = FIELD(@recommendedProductRow, "URL__c")
+       IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF                                 
      ENDIF
      
 
@@ -254,8 +254,11 @@
              set @districtName = FIELD(@translationRow, 'Content__c')
            ENDIF
 
-             set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero","Index__c", 0), 1), "URL__c")
-             set @imageURL = replace(@imageURL, "{param}", "w_450")
+             set @images = LookupRows('ENT.Image__c_Salesforce','Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero","Index__c", 0)
+             IF ROWCOUNT(@images) > 0 THEN     
+               set @imageURL = FIELD(Row(@images, 1), "URL__c")
+               set @imageURL = replace(@imageURL, "{param}", "w_450")
+             ENDIF
 
              set @redirectURL = FIELD(@recommendedProjectRow, "URL__c")
              IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
@@ -366,33 +369,40 @@
              set @cityId = FIELD(@recommendedAreaRow, "City_Id__c")
              set @districtId = FIELD(@recommendedAreaRow, "District_Id__c")
 
-             set @cityRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@cityId), 1)
-             set @districtRow = Row(LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@districtId), 1)
+             set @cityRows = LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@cityId)
+             IF ROWCOUNT (@cityRows) > 0 THEN 
+                set @cityRow = Row(@cityRows, 1)
+                set @citySfId = FIELD(@cityRow, 'Id')
+                set @cityName = FIELD(@cityRow, "Marketing_Name__c")
+                 set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@citySfId,'Field__c','marketingName','Language__c', @country)
+               IF ROWCOUNT(@translationQuery) > 0 THEN
+                 set @translationRow = Row(@translationQuery, 1)  
+                 set @cityName = FIELD(@translationRow, 'Content__c')
+               ENDIF   
+             ENDIF
+                                       
+             set @districtRows = LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@districtId)
+             IF ROWCOUNT (@districtRows) > 0 THEN          
+              set @districtRow = Row(@districtRows, 1)
+              set @districtSfId = FIELD(@districtRow, 'Id')
+                set @districtName = FIELD(@districtRow, "Marketing_Name__c")
+               set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@districtSfId,'Field__c','marketingName','Language__c', @country)
+             IF ROWCOUNT(@translationQuery) > 0 THEN
+               set @translationRow = Row(@translationQuery, 1)  
+               set @districtName = FIELD(@translationRow, 'Content__c')
+              ENDIF                               
+             ENDIF
 
-             set @citySfId = FIELD(@cityRow, 'Id')
-             set @districtSfId = FIELD(@districtRow, 'Id')
-
-             set @cityName = FIELD(@cityRow, "Marketing_Name__c")
-             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@citySfId,'Field__c','marketingName','Language__c', @country)
-           IF ROWCOUNT(@translationQuery) > 0 THEN
-             set @translationRow = Row(@translationQuery, 1)  
-             set @cityName = FIELD(@translationRow, 'Content__c')
-           ENDIF    
-
-             set @districtName = FIELD(@districtRow, "Marketing_Name__c")
-             set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Marketing_Location__c',@districtSfId,'Field__c','marketingName','Language__c', @country)
-           IF ROWCOUNT(@translationQuery) > 0 THEN
-             set @translationRow = Row(@translationQuery, 1)  
-             set @districtName = FIELD(@translationRow, 'Content__c')
-           ENDIF    
-
-
+     
              set @firstRow = @marketingName
              IF NOT EMPTY(@districtName) THEN set @firstRow = CONCAT(@firstRow, " - ", @districtName) ENDIF   
              IF NOT EMPTY(@cityName) THEN set @firstRow = CONCAT(@firstRow, " - ", @cityName) ENDIF    
 
-             set @imageURL = FIELD(Row(LookupRows('ENT.Image__c_Salesforce','Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero","Index__c", 0), 1), "URL__c")
-             set @imageURL = replace(@imageURL, "{param}", "w_450")
+             set @images = LookupRows('ENT.Image__c_Salesforce','Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero","Index__c", 0)
+             IF ROWCOUNT (@images) > 0 THEN           
+              set @imageURL = FIELD(Row(@images, 1), "URL__c")
+              set @imageURL = replace(@imageURL, "{param}", "w_450")
+             ENDIF
 
              set @redirectURL = FIELD(@recommendedAreaRow, "URL__c")
              IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
