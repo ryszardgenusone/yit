@@ -70,7 +70,7 @@
         set @productRecommendationId = FIELD(@row, "Product_Recommended__c"))
         set @projectRecommendationId = FIELD(@row, "Project_Recommended__c"))
         set @areaRecommendationId = FIELD(@row, "Marketing_Location_Recommended__c"))
-        IF NOT EMPTY(@productRecommendationId) AND @k==3 THEN
+        IF NOT EMPTY(@productRecommendationId) AND @k==1 THEN
                      
          
      set @recommendationRows = LookupRows('ENT.Product_Recommended__c_Salesforce','Id',@productRecommendationId)
@@ -187,6 +187,7 @@
      set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
     ENDIF                                 
     
+    set @firstRow = CONCAT(@projectShortTitle, @projectDistrictName)
     set @secondRow = @translatedStatus
     set @thirdRow = CONCAT(@apartmentNumber)
     IF NOT EMPTY(@apartmentType) THEN set @thirdRow = CONCAT(@thirdRow, ", ", @apartmentType) ENDIF
@@ -334,7 +335,7 @@
   
   
                
-  IF NOT EMPTY(@areaRecommendationId) AND @k==1 THEN
+  IF NOT EMPTY(@areaRecommendationId) AND @k==3 THEN
     set @recommendationRows = LookupRows('ENT.Marketing_Location_Recommended__c_Salesforce','Id',@areaRecommendationId)
     IF ROWCOUNT(@recommendationRows) > 0 THEN 
       set @recommendedAreaId = FIELD(Row(@recommendationRows, 1), "Recommended_Location__c")
@@ -443,7 +444,7 @@ thirdRow: %%=v(@thirdRow)=%%<br>
 
 
  <div role="article" aria-roledescription="email" aria-label="email name" lang="en" style="font-size:1rem; ">
-    <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">
+    <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;  cursor: pointer;">
       
       <div style="padding-top:10px; padding-right: 15px; padding-left:15px; width:70%; margin:auto;">
         <div style="font-family: 'Helvetica Neue'; color: #5b727c; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
