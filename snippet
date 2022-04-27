@@ -410,16 +410,16 @@ ENDIF
     <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">
       
       <div style="padding-top:10px; padding-right: 15px; padding-left:15px; width:70%; margin:auto;">
-        <div style="font-family: 'Helvetica Neue'; color: #5b727c; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
+        <section style="color: #5b727c; font-family: 'Helvetica Neue'; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
                                                           
      %%=v(@firstRow)=%%
-</div><div style="font-family: 'Helvetica Neue'; color: #5b727c; font-weight: light; text-align:center; width: 100%;">
+</section><section style="color: #5b727c; font-family: 'Helvetica Neue'; font-weight: light; text-align:center; width: 100%;">
                                                           
      %%=v(@secondRow)=%%
-</div><div style="padding-top: 15px;font-family: 'Helvetica Neue'; color: #5b727c; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
+</section><section style="color: #5b727c; padding-top: 15px;font-family: 'Helvetica Neue'; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
                                                           
      %%=v(@thirdRow)=%%
-</div>                   
+</section>                   
       </div>
       
     <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -444,17 +444,22 @@ ENDIF
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="80%" align="center">
                 <tr>
                   <td height="38" align="center">
-                    <div style="font-size: 16px; font-family: 'Helvetica Neue'; color: #DB4D69; text-align: center; text-decoration: none; background-color: #FFFFFF; border: 1px solid #DB4D69; text-decoration: none; text-align:center; white-space: nowrap; padding-top: 8px; padding-bottom: 8px; padding-left: 6px; padding-right: 6px; width:260px; min-width:200px; font-weight: bold; display: block; min-height: 24px;" target="_blank">
+                    <div style="font-size: 16px; font-family: 'Helvetica Neue'; 
+                                color: #FFFFFF; text-align: center; text-decoration: none; 
+                                background-color: #DB4D69; 
+                                border: 1px solid #DB4D69; 
+                                text-decoration: none; text-align:center; white-space: nowrap; 
+                                margin: auto;
+                                padding-top: 10px; padding-bottom: 7px; 
+                                padding-left: 6px; padding-right: 6px; 
+                                width:260px; min-width:200px; 
+                                font-weight: bold; display: 
+                                block; min-height: 24px;" target="_blank">
                        %%=v(@buttonText)=%%
                     </div>
                   </td>
                 </tr>
                 </table>
-              </td>
-            </tr>
-            <tr>
-              <td height="30" style="margin: 0;font-size:0px; mso-line-height-rule: exactly; line-height: 1px; white-space-collapse:collapse; max-height:30px;" valign="top">
-                &nbsp;
               </td>
             </tr>
           </table>
@@ -470,12 +475,13 @@ ENDIF
        <img class="reset" src="%%=v(@imageURL)=%%" alt="" style="vertical-align: middle;" border="0"> 
                                                        <!-- <img class="reset" src="https://res.cloudinary.com/yitpre/image/upload/w_450/v1616814926/263904.jpg" alt="" style="vertical-align: middle; padding-left: 15px; padding-right: 15px;" border="0">-->
       </div>
-        <div style="height: 25px;"></div>
       </td>
     </tr>
     </table>
   </a>
 </div>
+
+ <div style="height: 45px;"></div>
 
 <script runat="server" language="Ampscript"> 
    ENDIF
