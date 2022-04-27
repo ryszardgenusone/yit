@@ -3,7 +3,57 @@
       color-scheme: light dark;
       supported-color-schemes: light dark;
     }
+    .button-class{
+        font-size: 16px; 
+        font-family: 'Helvetica Neue'; 
+        text-align: center; 
+        text-decoration: none; 
+        text-decoration: none; 
+        text-align:center; 
+        white-space: nowrap; 
+        padding-top: 8px; 
+        padding-bottom: 8px; 
+        padding-left: 6px; 
+        padding-right: 6px; 
+        width:260px; 
+        min-width:200px; 
+        font-weight: bold; 
+        display: block; 
+        min-height: 24px;
+      }
+    @media (prefers-color-scheme: dark ) {
+       .button-color{
+        color: #FFFFFF; 
+        background-color: #DB4D69; 
+        border: 1px solid #DB4D69;
+      }
+      .text-style{
+        font-family: 'Helvetica Neue';
+        color: white;
+        text-align:center; 
+        width: 100%;
+      }
+      .rcmnd-block{
+       background-color:black;
+      }
+    }
+    @media (prefers-color-scheme: light ) {
+      .button-color{
+        color: #DB4D69; 
+        background-color: #FFFFFF; 
+        border: 1px solid #DB4D69;
+    }
+    .text-style{
+        font-family: 'Helvetica Neue';
+        color: #5b727c;
+        text-align:center; 
+        width: 100%;
+    }
+    .rcmnd-block{
+       background-color:white;
+    }
   </style>
+
   <style type="text/css">
   #outlook a {padding:0;}
   body[yahoo]{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
@@ -47,6 +97,7 @@
 </script>
 
 <script runat="server" language="Ampscript"> 
+     set @debug = false
      set @country = 'sk'
   
      IF EMPTY (@country) THEN
@@ -431,8 +482,9 @@
   
  if @wasAny == true THEN
 </script>
-
-<br><br>debug
+%%[
+if @debug == true THEN
+]%%
 
 recommendedProductId: %%=v(@recommendedProductId)=%%<br>
 redirectURL: %%=v(@redirectURL)=%%<br>
@@ -441,19 +493,20 @@ imageURL: %%=v(@imageURL)=%%<br>
 firstRow: %%=v(@firstRow)=%%<br>
 secondRow: %%=v(@secondRow)=%%<br>
 thirdRow: %%=v(@thirdRow)=%%<br>
-
-
- <div role="article" aria-roledescription="email" aria-label="email name" lang="en" style="font-size:1rem; ">
+%%[
+ENDIF
+]%%
+ <div role="article" aria-roledescription="email" aria-label="email name" lang="en" style="font-size:1rem;" class="rcmnd-block">
     <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;  cursor: pointer;">
       
       <div style="padding-top:10px; padding-right: 15px; padding-left:15px; width:70%; margin:auto;">
-        <div style="font-family: 'Helvetica Neue'; color: #5b727c; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
+        <div class="text-style" style="font-weight: %%=v(@firstRowWeigth)=%%">
                                                           
      %%=v(@firstRow)=%%
-</div><div style="font-family: 'Helvetica Neue'; color: #5b727c; font-weight: light; text-align:center; width: 100%;">
+</div><div class="text-style">
                                                           
      %%=v(@secondRow)=%%
-</div><div style="padding-top: 15px;font-family: 'Helvetica Neue'; color: #5b727c; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
+</div><div class="text-style" style="font-weight: %%=v(@lastRowWeight)=%%">
                                                           
      %%=v(@thirdRow)=%%
 </div>                   
@@ -471,7 +524,7 @@ thirdRow: %%=v(@thirdRow)=%%<br>
           <table role="presentation" class="hero-textbox" border="0" cellpadding="0" cellspacing="0" width="75%" align="center">
             <tr>
               <td valign="top" style="padding-top: 10px;">
-                <div style="height: 15px; background-color:white;">
+                <div style="height: 15px;">
                      
  </div>
               </td>
@@ -481,7 +534,7 @@ thirdRow: %%=v(@thirdRow)=%%<br>
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="80%" align="center">
                 <tr>
                   <td height="38" align="center">
-                    <div style="font-size: 16px; font-family: 'Helvetica Neue'; color: #DB4D69; text-align: center; text-decoration: none; background-color: #FFFFFF; border: 1px solid #DB4D69; text-decoration: none; text-align:center; white-space: nowrap; padding-top: 8px; padding-bottom: 8px; padding-left: 6px; padding-right: 6px; width:260px; min-width:200px; font-weight: bold; display: block; min-height: 24px;" target="_blank">
+                    <div class="button-class button-color" target="_blank">
                        %%=v(@buttonText)=%%
                     </div>
                   </td>
