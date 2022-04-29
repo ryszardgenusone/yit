@@ -14,7 +14,7 @@
         @country = 'en'
      ENDIF
                
-     set @leadId = '00Q5E0000088zUTUAY'
+     set @leadId = '00Q5E0000088zUsUAI'
     
      var @rows,@row,@rowcount,@i
      var @firstRow, @secondRow, @thirdRow
@@ -148,7 +148,7 @@
      set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
     ENDIF                                 
     
-    set @firstRow = CONCAT(@projectShortTitle, @projectDistrictName)
+    set @firstRow = CONCAT(@projectShortTitle," ", @projectDistrictName)
     set @secondRow = @translatedStatus
     set @thirdRow = CONCAT(@apartmentNumber)
     IF NOT EMPTY(@apartmentType) THEN set @thirdRow = CONCAT(@thirdRow, ", ", @apartmentType) ENDIF
