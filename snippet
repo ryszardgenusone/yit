@@ -14,7 +14,7 @@
         @country = 'fi'
      ENDIF
                
-     set @leadId = '00Q5E00000893P9UAI'
+     set @leadId = '00Q5E0000088zRLUAY'
     
      var @rows,@row,@rowcount,@i
      var @firstRow, @secondRow, @thirdRow
@@ -331,6 +331,7 @@
              set @cityId = FIELD(@recommendedAreaRow, "City_Id__c")
              set @districtId = FIELD(@recommendedAreaRow, "District_Id__c")
 
+            IF NOT EMPTY (@districtId) THEN 
              set @cityRows = LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@cityId)
              IF ROWCOUNT (@cityRows) > 0 THEN 
                 set @cityRow = Row(@cityRows, 1)
@@ -342,7 +343,9 @@
                  set @cityName = FIELD(@translationRow, 'Content__c')
                ENDIF   
              ENDIF
-                                       
+            ENDIF
+                  
+            IF NOT EMPTY (@cityId) THEN                            
              set @districtRows = LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@districtId)
              IF ROWCOUNT (@districtRows) > 0 THEN          
               set @districtRow = Row(@districtRows, 1)
@@ -354,6 +357,7 @@
                set @districtName = FIELD(@translationRow, 'Content__c')
               ENDIF                               
              ENDIF
+            ENDIF
 
      
              set @firstRow = @marketingName
