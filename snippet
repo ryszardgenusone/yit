@@ -22,9 +22,29 @@
      set @rows=LookupRows('ENT.Recommendation__c_Salesforce','Lead__c',@leadId, 'Is_Active__c', 'true')
      set @rowcount = ROWCOUNT(@rows)
      IF @rowcount > 0 THEN
-
-    for @k=1 to 3 do                           
+    for @k=1 to 3 do    
     for @i = 1 to @rowCount do
+                              
+      set @projectDistrictName = ''
+      set @projectShortTitle = ''
+      set @translatedStatus = ''
+      set @apartmentNumber = ''
+      set @apartmentType = ''
+      set @apartmentSize = ''
+      set @shortTitle = ''
+      set @districtName = ''
+      set @translatedStatus = ''
+      set @marketingHeadline = ''
+      set @marketingName = ''
+      set @districtName = ''
+      set @cityName = ''
+      set @imageURL = ''
+      set @redirectURL = ''
+      set @firstRowWeigth = ''
+      set @lastRowWeigth = ''                        
+      
+
+
         set @wasAny = false
                               
         set @row = row(@rows, @i)
@@ -60,7 +80,7 @@
        /*IF NOT EMPTY(@apartmentSize) THEN set @apartmentSize = REPLACE(@apartmentSize, ".", ",") ENDIF*/
        IF NOT EMPTY(@apartmentSize) THEN set @apartmentSize = CONCAT(@apartmentSize, " m²") ENDIF
                                                                   
-       set @images = LookupRows('ENT.Image__c_Salesforce','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel","Index__c", 0)
+  set @images = LookupOrderedRows('ENT.Image__c_Salesforce',1,'Index__c ASC','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel")
        IF ROWCOUNT(@images) > 0 THEN
          set @imageURL = FIELD(Row(@images, 1), "URL__c")
          set @imageURL = replace(@imageURL, "{param}", "w_450")     
@@ -216,7 +236,7 @@
              set @districtName = FIELD(@translationRow, 'Content__c')
            ENDIF
 
-             set @images = LookupRows('ENT.Image__c_Salesforce','Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero","Index__c", 0)
+             set @images = LookupOrderedRows('ENT.Image__c_Salesforce',1,'Index__c ASC', 'Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero")
              IF ROWCOUNT(@images) > 0 THEN     
                set @imageURL = FIELD(Row(@images, 1), "URL__c")
                set @imageURL = replace(@imageURL, "{param}", "w_450")
@@ -331,7 +351,7 @@
              set @cityId = FIELD(@recommendedAreaRow, "City_Id__c")
              set @districtId = FIELD(@recommendedAreaRow, "District_Id__c")
 
-            IF NOT EMPTY (@districtId) THEN 
+            IF NOT EMPTY (@cityId) THEN 
              set @cityRows = LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@cityId)
              IF ROWCOUNT (@cityRows) > 0 THEN 
                 set @cityRow = Row(@cityRows, 1)
@@ -345,7 +365,7 @@
              ENDIF
             ENDIF
                   
-            IF NOT EMPTY (@cityId) THEN                            
+            IF NOT EMPTY (@districtId) THEN                            
              set @districtRows = LookupRows('ENT.Marketing_Location__c_Salesforce','External_Id__c',@districtId)
              IF ROWCOUNT (@districtRows) > 0 THEN          
               set @districtRow = Row(@districtRows, 1)
@@ -364,7 +384,7 @@
              IF NOT EMPTY(@districtName) THEN set @firstRow = CONCAT(@firstRow, " - ", @districtName) ENDIF   
              IF NOT EMPTY(@cityName) THEN set @firstRow = CONCAT(@firstRow, " - ", @cityName) ENDIF    
 
-             set @images = LookupRows('ENT.Image__c_Salesforce','Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero","Index__c", 0)
+             set @images = LookupOrderedRows('ENT.Image__c_Salesforce',1,'Index__c ASC', 'Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero")
              IF ROWCOUNT (@images) > 0 THEN           
               set @imageURL = FIELD(Row(@images, 1), "URL__c")
               set @imageURL = replace(@imageURL, "{param}", "w_450")
