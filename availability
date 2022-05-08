@@ -1,0 +1,352 @@
+public without sharing class AppPortfolioFlagsCalculator {
+    public static Boolean avoidRecursion = false;
+    public void recalculateAllById(Set<Id> ids){
+        resetAllByIds(ids);
+
+        Set<Id> cityIds = new Set<Id>();
+        cityIds.addAll(getCityIdsFromProducts(ids));
+        cityIds.addAll(getCityIdsFromProjects(ids));
+        cityIds.addAll(getCityIdsFromLocations(ids));
+        Map<Id,Marketing_Location__c> cities = getCityMap(cityIds);
+
+        Set<Id> projectIds = getProjectIdsFromCities(cities);
+        Map<Id,Project_TT__c> projects = getProjectMap(projectIds);
+
+        Set<Id> districtIds = getDistrictsIdsFromProjects(projects);
+        Set<Id> areaIds = getAreasIdsFromProjects(projects);
+
+        Map<Id,Marketing_Location__c> districts = getDistrictMapByIds(districtIds);
+        Map<Id,Marketing_Location__c> areas = getAreaMapByIds(areaIds);
+
+        Set<Id> subProjectIds = getSubProjectIdsFromProjects(projects);
+        Map<Id,Project_TT__c> subProjects = getSubProjectMap(subProjectIds);
+
+        Set<Id> productIds = getProductIdsFromSubProjects(subProjects);
+        Map<Id, Product2> products = getProductMap(productIds);
+
+        resetAllLocally(products, subProjects, projects, areas, districts, cities);
+
+        calculateAvailabilities(products, subProjects, projects, areas, districts, cities);
+
+        avoidRecursion = true;
+    }
+
+    private void calculateAvailabilities(Map<Id, Product2> products, 
+            Map<Id, Project_TT__c> subProjects, 
+            Map<Id, Project_TT__c> projects, 
+            Map<Id, Marketing_Location__c> areas, 
+            Map<Id, Marketing_Location__c> districts, 
+            Map<Id, Marketing_Location__c> cities) {
+        calculateSubProjects(products, subProjects);
+        calculateProjects(subProjects, projects);
+        calculateAreas(projects, areas);
+        calculateDistricts(projects, districts);
+        calculateCities(projects, cities);
+    }
+
+    private void calculateCities(Map<Id, Project_TT__c> projects, Map<Id, Marketing_Location__c> locations) {
+        for(Id locationId : locations.keySet()){
+            Marketing_Location__c location = locations.get(locationId);
+            for(Project_TT__c project : location.Projects_City__r){
+                Project_TT__c loopProject = projects.get(project.Id);
+                location.Number_of_Available_Apartments__c += (Integer) loopProject.Number_of_Available_Apartments__c;
+                location.Number_of_Available_Parkings__c   += (Integer) loopProject.Number_of_Available_Parkings__c;
+                location.Number_of_Available_Storages__c   += (Integer) loopProject.Number_of_Available_Storages__c;
+                location.Number_of_Available_Projects__c++;
+            }
+            locations.put(locationId, location);
+        }
+    }
+
+    private void calculateDistricts(Map<Id, Project_TT__c> projects, Map<Id, Marketing_Location__c> locations) {
+        for(Id locationId : locations.keySet()){
+            Marketing_Location__c location = locations.get(locationId);
+            for(Project_TT__c project : location.Projects_District__r){
+                Project_TT__c loopProject = projects.get(project.Id);
+                location.Number_of_Available_Apartments__c += (Integer) loopProject.Number_of_Available_Apartments__c;
+                location.Number_of_Available_Parkings__c   += (Integer) loopProject.Number_of_Available_Parkings__c;
+                location.Number_of_Available_Storages__c   += (Integer) loopProject.Number_of_Available_Storages__c;
+                location.Number_of_Available_Projects__c++;
+            }
+            locations.put(locationId, location);
+        }
+    }
+
+    private void calculateAreas(Map<Id, Project_TT__c> projects, Map<Id, Marketing_Location__c> locations) {
+        for(Id locationId : locations.keySet()){
+            Marketing_Location__c location = locations.get(locationId);
+            for(Project_TT__c project : location.Projects_Area__r){
+                Project_TT__c loopProject = projects.get(project.Id);
+                location.Number_of_Available_Apartments__c += (Integer) loopProject.Number_of_Available_Apartments__c;
+                location.Number_of_Available_Parkings__c   += (Integer) loopProject.Number_of_Available_Parkings__c;
+                location.Number_of_Available_Storages__c   += (Integer) loopProject.Number_of_Available_Storages__c;
+                location.Number_of_Available_Projects__c++;
+            }
+            locations.put(locationId, location);
+        }
+    }
+
+    private void calculateProjects(Map<Id, Project_TT__c> subProjects, Map<Id, Project_TT__c> projects) {
+        for(Id projectId : projects.keySet()){
+            Project_TT__c project = projects.get(projectId);
+            for(Project_TT__c subProject : project.YITOriginalProjects__r){
+                Project_TT__c loopSubProject = subProjects.get(subProject.Id);
+                project.Number_of_Available_Apartments__c += loopSubProject.Number_of_Available_Apartments__c;
+                project.Number_of_Available_Parkings__c   += loopSubProject.Number_of_Available_Parkings__c;
+                project.Number_of_Available_Storages__c   += loopSubProject.Number_of_Available_Storages__c;
+            }
+            projects.put(projectId, project);
+        }
+    }
+
+    private void calculateSubProjects(Map<Id, Product2> products, Map<Id, Project_TT__c> subProjects) {
+        for(Id subProjectId : subProjects.keySet()){
+            Project_TT__c subProject = subProjects.get(subProjectId);
+            for(Product2 product : subProject.Apartments__r){
+                Product2 mapProduct = products.get(product.Id);
+                if(getProductFlag(mapProduct)){
+                    if(APARTMENTS_TYPES.contains(mapProduct.Building_Type__c)){
+                        subProject.Number_of_Available_Apartments__c++;
+                    }else if(PARKING_TYPES.contains(mapProduct.Building_Type__c)){
+                        subProject.Number_of_Available_Parkings__c++;
+                    }else if(STORAGE_TYPES.contains(mapProduct.Building_Type__c)) {
+                        subProject.Number_of_Available_Storages__c++;
+                    }
+                }
+            }
+            subProjects.put(subProjectId, subProject);
+        }
+    }
+
+
+    private void resetAllByIds(Set<Id> ids) {
+        List<SObject> objects = new List<SObject>();
+        for(Id recordId : ids){
+            SObject sObjectInstance = Utils.getObjectInstanceFromId(recordId);
+            if(sObjectInstance instanceof Product2){
+                Product2 product = new Product2(Id=recordId);
+                product.Marketing_Activity_Flag__c = false;
+                objects.add(product);
+            }else if (sObjectInstance instanceof Project_TT__c){
+                Project_TT__c project = new Project_TT__c(Id=recordId);
+                project.Marketing_Activity_Flag__c = false;
+                project.Number_of_Available_Apartments__c = 0;
+                project.Number_of_Available_Parkings__c = 0;
+                project.Number_of_Available_Storages__c = 0;
+                objects.add(project);
+            }else if (sObjectInstance instanceof Marketing_Location__c){
+                Marketing_Location__c location = new Marketing_Location__c(Id=recordId);
+                location.Marketing_Activity_Flag__c = false;
+                location.Number_of_Available_Apartments__c = 0;
+                location.Number_of_Available_Parkings__c = 0;
+                location.Number_of_Available_Storages__c = 0;
+                location.Number_of_Available_Projects__c = 0;
+                objects.add(location);
+            }
+        }
+        update objects;
+    }
+
+    private void resetProjects(Map<Id, Project_TT__c> projects){
+        for(Id projectId : projects.keySet()){
+            Project_TT__c project = projects.get(projectId);
+            project.Marketing_Activity_Flag__c = false;
+            project.Number_of_Available_Apartments__c = 0;
+            project.Number_of_Available_Parkings__c = 0;
+            project.Number_of_Available_Storages__c = 0;
+            projects.put(projectId, project);
+        }
+    }
+
+    private void resetLocations(Map<Id, Marketing_Location__c> locations){
+        for(Id locationId : locations.keySet()){
+            Marketing_Location__c location = locations.get(locationId);
+            location.Marketing_Activity_Flag__c = false;
+            location.Number_of_Available_Apartments__c = 0;
+            location.Number_of_Available_Parkings__c = 0;
+            location.Number_of_Available_Storages__c = 0;
+            location.Number_of_Available_Projects__c = 0;
+            locations.put(locationId, location);
+        }
+    }
+
+    private void resetAllLocally(Map<Id, Product2> products,
+            Map<Id, Project_TT__c> subProjects,
+            Map<Id, Project_TT__c> projects,
+            Map<Id, Marketing_Location__c> areas,
+            Map<Id, Marketing_Location__c> districts,
+            Map<Id, Marketing_Location__c> cities) {
+        for(Id productId : products.keySet()){
+            Product2 product = products.get(productId);
+            product.Marketing_Activity_Flag__c = false;
+            products.put(productId, product);
+        }
+        resetProjects(subProjects);
+        resetProjects(projects);
+        resetLocations(areas);
+        resetLocations(districts);
+        resetLocations(cities);
+    }
+
+    private Map<Id, Marketing_Location__c> getDistrictMapByIds(Set<Id> ids) {
+        return new Map<Id, Marketing_Location__c>([SELECT Id, 
+        (SELECT Id FROM Projects_District__r) FROM Marketing_Location__c WHERE Id IN :ids]);
+    }
+
+    private Map<Id, Marketing_Location__c> getAreaMapByIds(Set<Id> ids) {
+        return new Map<Id, Marketing_Location__c>([SELECT Id, 
+        (SELECT Id FROM Projects_Area__r) FROM Marketing_Location__c WHERE Id IN :ids]);
+    }
+
+    private Set<Id> getDistrictsIdsFromProjects(Map<Id, Project_TT__c> projects) {
+        Set<Id> areasAndDistricts = new Set<Id>();
+        for(Project_TT__c project : projects){
+            if(String.isNotBlank(project.Marketing_District__c)){
+                areasAndDistricts.add(project.Marketing_District__c);
+            }
+        }
+        return areasAndDistricts;
+    }
+
+    private Set<Id> getAreasIdsFromProjects(Map<Id, Project_TT__c> projects) {
+        Set<Id> areasAndDistricts = new Set<Id>();
+        for(Project_TT__c project : projects){
+            if(String.isNotBlank(project.Marketing_Area__c)){
+                areasAndDistricts.add(project.Marketing_Area__c);
+            }
+        }
+        return areasAndDistricts;
+    }
+
+    private Set<Id> getProductIdsFromSubProjects(Map<Id, Project_TT__c> subProjects) {
+        Set<Id> productIds = new Set<Id>();
+        for(Project_TT__c subProject : subProjects.values()){
+            for(Product2 product : subProject.Apartments__r){
+                productIds.add(product.Id);
+            }
+        }
+        return productIds;
+    }
+
+    private Map<Id, Project_TT__c> getSubProjectMap(Set<Id> ids) {
+        return new Map<Id, Project_TT__c>([SELECT Id,
+        (SELECT Id FROM Apartments__r) FROM Project_TT__c WHERE Id IN :ids AND Is_SubProject__c = TRUE]);
+    }
+
+    private Set<Id> getSubProjectIdsFromProjects(Map<Id, Project_TT__c> projects) {
+        Set<Id> subProjectIds = new Set<Id>();
+        for(Project_TT__c project : projects.values()){
+            for(Project_TT__c subProject : project.YITOriginalProjects__r){
+                subProjectIds.add(subProject.Id);
+            }
+        }
+        return subProjectIds;
+    }
+
+    private Map<Id, Project_TT__c> getProjectMap(Set<Id> ids) {
+        return new Map<Id, Project_TT__c>([SELECT Id, Marketing_Area__c, Marketing_District__c
+        (SELECT Id FROM YITOriginalProjects__r) FROM Project_TT__c WHERE Id IN :ids AND Is_SubProject__c = FALSE]);
+    }
+
+    private Set<Id> getProjectIdsFromCities(Map<Id, Marketing_Location__c> cities) {
+        Set<Id> projectIds = new Set<Id>();
+        for(Marketing_Location__c city : cities.values()){
+            for(Project_TT__c project : city.Projects_City__r){
+                projectIds.add(project.Id);
+            }
+        }
+        return projectIds;
+    }
+
+    private Map<Id, Marketing_Location__c> getCityMap(Set<Id> ids) {
+        return new Map<Id, Marketing_Location__c>([SELECT Id,
+        (SELECT Id FROM Projects_City__r) FROM Marketing_Location__c WHERE Id IN :ids]);
+    }
+
+    private Set<Id> getCityIdsFromProducts(Set<Id> ids){
+        List<Product2> products = [SELECT Project__r.YIT_Original_Project__r.Marketing_City__c FROM Product2 WHERE Id IN :ids];
+        Set<Id> cityIds = new Set<Id>();
+        for(Product2 product : products){
+            if(String.isNotBlank(product.Project__r.YIT_Original_Project__r.Marketing_City__c)){
+                cityIds.add(product.Project__r.YIT_Original_Project__r.Marketing_City__c);
+            }
+        }
+        return cityIds;
+    }
+
+    private Set<Id> getCityIdsFromProjects(Set<Id> ids){
+        List<Project_TT__c> projects = [SELECT YIT_Original_Project__r.Marketing_City__c, Marketing_City__c FROM Project_TT__c WHERE Id IN :ids];
+        Set<Id> cityIds = new Set<Id>();
+        for(Project_TT__c project : projects){
+            if(String.isNotBlank(project.YIT_Original_Project__r.Marketing_City__c)){
+                cityIds.add(project.YIT_Original_Project__r.Marketing_City__c);
+            }
+            if(String.isNotBlank(project.Marketing_City__c)){
+                cityIds.add(project.Marketing_City__c);
+            }
+        }
+        return cityIds;
+    }
+
+    private Set<Id> getCityIdsFromLocations(Set<Id> ids){
+        List<Marketing_Location__c> locations = [SELECT City__c FROM Marketing_Location__c WHERE Id IN :ids];
+        Set<Id> cityIds = new Set<Id>();
+        for(Marketing_Location__c location : locations){
+            if(String.isNotBlank(location.City__c)){
+                cityIds.add(location.City__c);
+            }
+        }
+        return cityIds;
+    }
+
+    private Map<Id, Product2> getProductMap(Set<Id> ids) {
+        return new Map<Id,Product2>([SELECT Id,
+                CMS_Active_Flag__c,
+                PRIMA_IsDeleted__c,
+                Marketing_Activity_Flag_Manual__c,
+                Web_Reservation_Status__c,
+                Building_Type__c,
+
+                Project__c,
+                Project__r.CMS_Active_Flag__c,
+                Project__r.PRIMA_IsDeleted__c,
+                Project__r.YIT_Original_Project__c,
+
+                Project__r.YIT_Original_Project__c,
+                Project__r.YIT_Original_Project__r.Marketing_Area__c,
+                Project__r.YIT_Original_Project__r.Marketing_District__c,
+                Project__r.YIT_Original_Project__r.Marketing_City__c
+        FROM Product2 WHERE
+                Is_From_Application_Portfolio__c = TRUE AND (
+                        Project__c IN :ids OR
+                        Project__r.YIT_Original_Project__c IN :ids OR
+                        Project__r.YIT_Original_Project__r.Marketing_Area__c IN :ids OR
+                        Project__r.YIT_Original_Project__r.Marketing_District__c IN :ids OR
+                        Project__r.YIT_Original_Project__r.Marketing_City__c IN :ids)]);
+    }
+
+    public AppPortfolioFlagsCalculator(){
+        for(PRIMA_Building_Types__mdt buildingType : PRIMA_Building_Types__mdt.getAll().values()){
+            if(buildingType.Is_Apartment_Type__c){
+                APARTMENTS_TYPES.add(buildingType.Building_Type__c);
+            }
+            if(buildingType.Is_Parking_Space__c){
+                PARKING_TYPES.add(buildingType.Building_Type__c);
+            }
+            if(buildingType.Is_Storage_Type__c){
+                STORAGE_TYPES.add(buildingType.Building_Type__c);
+            }
+        }
+    }
+
+    public List<String> PARKING_TYPES = new List<String>();
+    public List<String> STORAGE_TYPES = new List<String>();
+    public List<String> APARTMENTS_TYPES = new List<String>();
+
+    public final String PRODUCT_STATUS_FREE = 'Free';
+    public Boolean getProductFlag(Product2 product){
+        return product.CMS_Active_Flag__c &&
+                product.PRIMA_IsDeleted__c == false &&
+                product.Web_Reservation_Status__c == PRODUCT_STATUS_FREE;
+    }
+}
