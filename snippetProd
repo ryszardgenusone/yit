@@ -9,14 +9,16 @@
 <script runat="server" language="Ampscript"> 
      set @debug = false
  
-    IF NOT EMPTY(CampaignMember:LeadId) THEN
-        set @leadId = CampaignMember:LeadId
+    set @leadId = '00Q7T000001dAt2UAE'
+    /*IF NOT EMPTY(CampaignMember:LeadId) THEN
+        set @leadId = CampaignMember:LeadId*/
         
-        IF NOT EMPTY (CampaignMember:Country) THEN
+        set @country = 'fi'
+        /*IF NOT EMPTY (CampaignMember:Country) THEN
            set @country = CampaignMember:Country
         ELSE
            set @country = 'en'
-       ENDIF
+       ENDIF*/
                   
        var @rows,@row,@rowcount,@i
        var @firstRow, @secondRow, @thirdRow
@@ -71,7 +73,7 @@
          set @apartmentNumber = FIELD(@recommendedProductRow, "Apartment_Number__c") 
 
          set @apartmentType = FIELD(@recommendedProductRow, 'Apartment_Type__c')                             
-         set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce','Product__c',@recommendedProductId,'Field__c','apartmentType','Language__c', @country)
+         set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Product__c',@recommendedProductId,'Field__c','apartmentType','Language__c', @country)
          IF ROWCOUNT(@translationQuery) > 0 THEN
            set @translationRow = Row(@translationQuery, 1)  
            set @apartmentType = FIELD(@translationRow, 'Content__c')
@@ -168,9 +170,11 @@
 
       IF @status == 'ToBeReady' THEN
        set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
-      ENDIF                                 
-
-      set @firstRow = CONCAT(@projectShortTitle, " ", @projectDistrictName)
+      ENDIF         
+      
+     IF NOT EMPTY(@projectDistrictName) THEN set @projectShortTitle = CONCAT(@projectShortTitle, " - ") ENDIF
+     
+      set @firstRow = CONCAT(@projectShortTitle, @projectDistrictName)
       set @secondRow = @translatedStatus
       set @thirdRow = CONCAT(@apartmentNumber)
       IF NOT EMPTY(@apartmentType) THEN set @thirdRow = CONCAT(@thirdRow, ", ", @apartmentType) ENDIF
@@ -295,8 +299,11 @@
                  set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
                 ENDIF                                 
 
-               set @firstRow = CONCAT(@shortTitle, " ", @districtName)
+               IF NOT EMPTY(@districtName) THEN set @shortTitle = CONCAT(@shortTitle, " - ") ENDIF   
+               
+               set @firstRow = CONCAT(@shortTitle, @districtName)
                set @secondRow = @translatedStatus
+  
                set @thirdRow = @marketingHeadline
 
                set @firstRowWeigth = 'light'
@@ -432,27 +439,28 @@ thirdRow: %%=v(@thirdRow)=%%<br>
 %%[
 ENDIF
 ]%%
-<div style="background-color:gray;">
-<div role="article" aria-roledescription="email" aria-label="email name" lang="en" style="font-size:1rem; background-color:white;">
+<br>
+<div style="background-color:transparent; border:none;">
+<div role="article" aria-roledescription="email" aria-label="email name" lang="en" style="font-size:1rem; background-color:transparent; border-style: none;">
     <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">
       
-      <div style="padding-top:10px; padding-right: 15px; padding-left:15px; width:70%; margin:auto;">
-        <section style="color: #5b727c; font-family: 'Helvetica'; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
+      <div style="padding-top:10px; padding-right: 15px; padding-left:15px; width:70%; margin:auto; border-style: none; background-color: transparent;">
+        <p style="margin: 10px 0px 0px 0px; color: #5b727c; font-family: 'Helvetica'; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
                                                           
      %%=v(@firstRow)=%%
-</section><section style="color: #5b727c; font-family: 'Helvetica'; font-weight: light; text-align:center; width: 100%;">
+</p><p style="margin: 10px 0px 0px 0px; color: #5b727c; font-family: 'Helvetica'; font-weight: light; text-align:center; width: 100%;">
                                                           
      %%=v(@secondRow)=%%
-</section><section style="color: #5b727c; padding-top: 15px;font-family: 'Helvetica'; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
+</p><p style="margin: 10px 0px 0px 0px; color: #5b727c; padding-top: 15px;font-family: 'Helvetica'; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
                                                           
      %%=v(@thirdRow)=%%
-</section>                   
+</p>                   
       </div>
       
     <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
       <td valign="top">
-        <div class="over-mob" style="max-height:45px; margin: 0 auto; text-align: center;">
+        <div class="over-mob" style="max-height:45px; margin: 0 auto; text-align: center; border-style: none;">
       <table role="presentation" class="faux-absolute reset over-mob" align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="position:relative; opacity:0.999;">
       <tr>
         <td valign="top">
@@ -460,28 +468,28 @@ ENDIF
 
           <table role="presentation" class="hero-textbox" border="0" cellpadding="0" cellspacing="0" width="75%" align="center">
             <tr>
-              <td valign="top" style="padding-top: 10px;">
-                <div style="height: 15px; background-color:white;">
-                     
- </div>
+              <td valign="top" style="border: none;">
+                <div style="border: none; background-color: transparent; 
+                            border-top: 17px solid transparent;"></div>
               </td>
             </tr>
             <tr>
               <td valign="top">
-                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="80%" align="center">
+                <table style = "border: none;"
+                       role="presentation" border="0" cellpadding="0" cellspacing="0" width="80%" align="center">
                 <tr>
-                  <td height="38" align="center">
+                  <td align="center" style ="border:none; background-color: transparent;">
                     <div style="font-size: 16px; font-family: 'Helvetica'; 
-                                color: #FFFFFF; text-align: center; text-decoration: none; 
-                                background-color: #DB4D69; 
-                                border: 1px solid #DB4D69; 
-                                text-decoration: none; text-align:center; white-space: nowrap; 
-                                margin: auto;
-                                padding-top: 10px; padding-bottom: 7px; 
-                                padding-left: 6px; padding-right: 6px; 
-                                width:260px; min-width:200px; 
-                                font-weight: bold; display: 
-                                block; min-height: 24px;" target="_blank">
+                                color: #FFFFFF; text-decoration: none; 
+                                text-decoration: none; white-space: nowrap;
+                                font-weight: bold;
+                                border: none;
+                                background-color: #DB4D69;
+                                width: 260px; 
+                                min-width:200px;
+                                border-top: 11px solid #DB4D69;
+                                border-bottom: 11px solid #DB4D69;
+                                ">
                        %%=v(@buttonText)=%%
                     </div>
                   </td>
@@ -498,8 +506,8 @@ ENDIF
       </tr>
       </table>
           </div>
-        <div style="width: 100%;text-align: center;">
-       <img class="reset" src="%%=v(@imageURL)=%%" alt="" style="vertical-align: middle;" border="0"> 
+        <div style="width: 100%;text-align: center; border-style: none;">
+       <img class="reset" src="%%=v(@imageURL)=%%" alt="" style="vertical-align: middle;" border-style: none;> 
                                                        <!-- <img class="reset" src="https://res.cloudinary.com/yitpre/image/upload/w_450/v1616814926/263904.jpg" alt="" style="vertical-align: middle; padding-left: 15px; padding-right: 15px;" border="0">-->
       </div>
       </td>
@@ -508,7 +516,7 @@ ENDIF
   </a>
 </div>
 
- <div style="height: 45px; background-color:white;"></div>
+ <div style="height: 45px; background-color:white; border-style: none;"></div>
   
 </div>  
 
@@ -517,12 +525,9 @@ ENDIF
      NEXT @i 
     NEXT @k 
    ENDIF
-   
-   ENDIF
-   
-   IF @wasAtleastOneRecommendation == false THEN
-     set @redirectURL = CONCAT("https://www.yit.", @country, "/")
 </script>
+<br/>
+
 <!--<a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">Visit our webpage today!</a>-->
 <script runat="server" language="Ampscript"> 
    ENDIF
