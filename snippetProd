@@ -9,15 +9,16 @@
 <script runat="server" language="Ampscript"> 
      set @debug = false
      set @imgWidth = "w_600"
-    
+     set @defaultApartmentImage = "https://image.yit-info.com/lib/fe3f11717564047d751777/m/4/13480985-df3b-4156-aac5-6074b2ec7fc7.jpeg"
+     set @defaultProjectImage = "https://image.yit-info.com/lib/fe3f11717564047d751777/m/4/aa93a28e-45ec-4ec1-934a-fabea4cebc14.jpeg"
+     set @defaultAreaImage = "https://image.yit-info.com/lib/fe3f11717564047d751777/m/4/f9963aea-d0ac-484f-a8ad-862c9b0caf19.jpeg"
+  
+    set @country = 'fi'
     IF NOT EMPTY(CampaignMember:LeadId) THEN
         set @leadId = CampaignMember:LeadId
         
-        set @country = 'fi'
         IF NOT EMPTY (CampaignMember:Country) THEN
            set @country = CampaignMember:Country
-        ELSE
-           set @country = 'en'
        ENDIF
                   
        var @rows,@row,@rowcount,@i
@@ -87,7 +88,8 @@
     set @images = LookupOrderedRows('ENT.Image__c_Salesforce_1',1,'Index__c ASC','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel")
          IF ROWCOUNT(@images) > 0 THEN
            set @imageURL = FIELD(Row(@images, 1), "URL__c")
-           set @imageURL = replace(@imageURL, "{param}",  @imgWidth)     
+           set @imageURL = replace(@imageURL, "{param}",  @imgWidth)
+         ELSE set @imageURL = @defaultApartmentImage
          ENDIF
 
          set @redirectURL = FIELD(@recommendedProductRow, "URL__c")
@@ -246,6 +248,7 @@
                IF ROWCOUNT(@images) > 0 THEN     
                  set @imageURL = FIELD(Row(@images, 1), "URL__c")
                  set @imageURL = replace(@imageURL, "{param}",  @imgWidth)
+               ELSE set @imageURL = @defaultProjectImage
                ENDIF
 
                set @redirectURL = FIELD(@recommendedProjectRow, "URL__c")
@@ -397,6 +400,7 @@
                IF ROWCOUNT (@images) > 0 THEN           
                 set @imageURL = FIELD(Row(@images, 1), "URL__c")
                 set @imageURL = replace(@imageURL, "{param}",  @imgWidth)
+               ELSE set @imageURL = @defaultAreaImage
                ENDIF
 
                set @redirectURL = FIELD(@recommendedAreaRow, "URL__c")
