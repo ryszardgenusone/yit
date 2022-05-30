@@ -1,0 +1,564 @@
+<script runat="server">
+  Platform.Load("Core","1.1.1");
+  function debugValue(description, value) {
+        //Write(description + ': ' + (typeof value == 'object' ? Stringify(value) : value) + '<br><br>');
+    };
+  try{
+</script>
+
+<script runat="server" language="Ampscript"> 
+     set @debug = false
+     set @imgWidth = "w_600"
+     set @defaultApartmentImage = "https://image.yit-info.com/lib/fe3f11717564047d751777/m/4/13480985-df3b-4156-aac5-6074b2ec7fc7.jpeg"
+     set @defaultProjectImage = "https://image.yit-info.com/lib/fe3f11717564047d751777/m/4/aa93a28e-45ec-4ec1-934a-fabea4cebc14.jpeg"
+     set @defaultAreaImage = "https://image.yit-info.com/lib/fe3f11717564047d751777/m/4/f9963aea-d0ac-484f-a8ad-862c9b0caf19.jpeg"
+  
+    set @country = 'fi'
+    IF NOT EMPTY(CampaignMember:LeadId) THEN
+        set @leadId = CampaignMember:LeadId
+        
+        IF NOT EMPTY (CampaignMember:Country) THEN
+           set @country = CampaignMember:Country
+       ENDIF
+                  
+       var @rows,@row,@rowcount,@i
+       var @firstRow, @secondRow, @thirdRow
+       set @wasAtleastOneRecommendation = false
+       set @rows=LookupRows('ENT.Recommendation__c_Salesforce_1','Lead__c',@leadId, 'Is_Active__c', 'true')
+       set @rowcount = ROWCOUNT(@rows)
+       IF @rowcount > 0 THEN
+      for @k=1 to 3 do    
+      for @i = 1 to @rowCount do
+
+        set @projectDistrictName = ''
+        set @projectShortTitle = ''
+        set @translatedStatus = ''
+        set @apartmentNumber = ''
+        set @apartmentType = ''
+        set @apartmentSize = ''
+        set @shortTitle = ''
+        set @districtName = ''
+        set @translatedStatus = ''
+        set @marketingHeadline = ''
+        set @marketingName = ''
+        set @districtName = ''
+        set @cityName = ''
+        set @imageURL = ''
+        set @redirectURL = ''
+        set @firstRowWeigth = ''
+        set @lastRowWeigth = ''                        
+
+
+
+          set @wasAny = false
+
+          set @row = row(@rows, @i)
+          set @productRecommendationId = FIELD(@row, "Product_Recommended__c"))
+          set @projectRecommendationId = FIELD(@row, "Project_Recommended__c"))
+          set @areaRecommendationId = FIELD(@row, "Marketing_Location_Recommended__c"))
+          IF NOT EMPTY(@productRecommendationId) AND @k==1 THEN
+
+
+       set @recommendationRows = LookupRows('ENT.Product_Recommended__c_Salesforce_1','Id',@productRecommendationId)
+       IF ROWCOUNT(@recommendationRows) > 0 THEN
+         set @recommendedProductId = FIELD(Row(@recommendationRows, 1), "Recommended_Product__c")
+       ENDIF
+
+       set @productRows = LookupRows('ENT.Product2_Salesforce_1','Id',@recommendedProductId)
+       IF ROWCOUNT(@productRows) > 0 THEN
+         set @wasAny = true
+         set @wasAtleastOneRecommendation = true
+
+         set @recommendedProductRow = Row(@productRows, 1)
+
+         set @apartmentNumber = FIELD(@recommendedProductRow, "Apartment_Number__c") 
+
+         set @apartmentType = FIELD(@recommendedProductRow, 'Apartment_Type__c')                             
+         set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Product__c',@recommendedProductId,'Field__c','apartmentType','Language__c', @country)
+         IF ROWCOUNT(@translationQuery) > 0 THEN
+           set @translationRow = Row(@translationQuery, 1)  
+           set @apartmentType = FIELD(@translationRow, 'Content__c')
+         ENDIF
+
+         set @apartmentType = FIELD(@recommendedProductRow, "Apartment_Type__c")      
+         set @apartmentSize = FIELD(@recommendedProductRow, "PRIMA_Apartment_Size__c")      
+         /*IF NOT EMPTY(@apartmentSize) THEN set @apartmentSize = REPLACE(@apartmentSize, ".", ",") ENDIF*/
+         IF NOT EMPTY(@apartmentSize) THEN set @apartmentSize = CONCAT(@apartmentSize, " m²") ENDIF
+
+    set @images = LookupOrderedRows('ENT.Image__c_Salesforce_1',1,'Index__c ASC','Product__c',@recommendedProductId, "Subtype__c", "ProductItemResourceCarousel")
+         IF ROWCOUNT(@images) > 0 THEN
+           set @imageURL = FIELD(Row(@images, 1), "URL__c")
+           set @imageURL = replace(@imageURL, "{param}",  @imgWidth)
+         ELSE set @imageURL = @defaultApartmentImage
+         ENDIF
+
+         set @redirectURL = FIELD(@recommendedProductRow, "URL__c")
+         IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF                                 
+       ENDIF
+
+
+      set @subProjectId = FIELD(@recommendedProductRow, "Project__c")  
+      set @subProjectRows = LookupRows('ENT.Project_TT__c_Salesforce_1','Id',@subProjectId)
+      IF ROWCOUNT(@subProjectRows) > 0 THEN
+        set @recommendedProjectId = FIELD(Row(@subProjectRows, 1), 'YIT_Original_Project__c')  
+        set @projectRows = LookupRows('ENT.Project_TT__c_Salesforce_1','Id',@recommendedProjectId)
+        IF ROWCOUNT(@projectRows) > 0 THEN
+         set @projectRow = Row(@projectRows, 1)   
+
+         set @projectShortTitle = FIELD(@projectRow, "Title__c")                     
+         set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Project__c',@recommendedProjectId,'Field__c','shortTitle','Language__c', @country)
+         IF ROWCOUNT(@translationQuery) > 0 THEN
+           set @translationRow = Row(@translationQuery, 1)  
+           set @projectShortTitle = FIELD(@translationRow, 'Content__c')
+         ENDIF
+
+
+         set @projectDistrictName = FIELD(@projectRow, "District_Name__c")
+         set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Project__c',@recommendedProjectId,'Field__c','district','Language__c', @country)
+         IF ROWCOUNT(@translationQuery) > 0 THEN
+           set @translationRow = Row(@translationQuery, 1)  
+           set @projectDistrictName = FIELD(@translationRow, 'Content__c')
+         ENDIF
+
+         set @status = FIELD(@projectRow, "Web_Project_Status__c")
+         set @completionDate = FIELD(@projectRow, "Completion_Date__c")
+         IF NOT EMPTY (@completionDate) THEN set @completionDate = Format(@completionDate,"d.MM.yyyy") ENDIF
+        ENDIF            
+      ENDIF            
+
+      var @translatedStatus
+      IF @country == 'fi' THEN
+           if @status == 'Planned' THEN
+              set @translatedStatus = 'Suunnitteilla'
+           ENDIF
+           if @status == 'PreMarketing' THEN
+              set @translatedStatus = 'Ennakkomarkkinoinnissa'
+           ENDIF
+           if @status == 'ReadyToMoveIn' THEN
+              set @translatedStatus = 'Muuttovalmis'
+           ENDIF
+           if @status == 'ToBeReady' THEN
+              set @translatedStatus = 'Arvioitu valmistuminen'
+           ENDIF
+      ENDIF
+      IF @country == 'cz' THEN
+            if @status == 'Planned' THEN
+              set @translatedStatus = 'Plánovaný'
+           ENDIF
+           if @status == 'PreMarketing' THEN
+              set @translatedStatus = 'Předprodej'
+           ENDIF
+           if @status == 'ReadyToMoveIn' THEN
+              set @translatedStatus = 'K nastěhování'
+           ENDIF
+           if @status == 'ToBeReady' THEN
+              set @translatedStatus = 'K dokončení'
+           ENDIF
+      ENDIF
+      IF @country == 'sk' THEN
+           if @status == 'Planned' THEN
+              set @translatedStatus = 'Plánovaný'
+           ENDIF
+           if @status == 'PreMarketing' THEN
+              set @translatedStatus = 'Predpredaj'
+           ENDIF
+           if @status == 'ReadyToMoveIn' THEN
+              set @translatedStatus = 'K nasťahovanie'
+           ENDIF
+           if @status == 'ToBeReady' THEN
+              set @translatedStatus = 'K dokončenie'
+           ENDIF
+      ENDIF
+
+      IF @status == 'ToBeReady' THEN
+       set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
+      ENDIF         
+      
+     IF NOT EMPTY(@projectDistrictName) THEN set @projectShortTitle = CONCAT(@projectShortTitle, " - ") ENDIF
+     
+      set @firstRow = CONCAT(@projectShortTitle, @projectDistrictName)
+      set @secondRow = @translatedStatus
+      set @thirdRow = CONCAT(@apartmentNumber)
+      IF NOT EMPTY(@apartmentType) THEN set @thirdRow = CONCAT(@thirdRow, ", ", @apartmentType) ENDIF
+      IF NOT EMPTY(@apartmentSize) THEN set @thirdRow = CONCAT(@thirdRow, ", ", @apartmentSize) ENDIF
+
+      set @firstRowWeigth = 'light'
+      set @lastRowWeight = 'bold'
+
+      var @buttonText
+      IF @country == 'fi' THEN
+           set @buttonText = 'Katso asunnon lisätiedot'
+      ENDIF
+      IF @country == 'cz' THEN
+           set @buttonText = 'Zobrazit detail bytu'
+      ENDIF
+      IF @country == 'sk' THEN
+           set @buttonText = 'Zobraziť detail bytu'
+      ENDIF
+
+      ENDIF
+
+
+
+
+
+
+
+
+
+
+    IF NOT EMPTY(@projectRecommendationId) AND @k==2 THEN
+
+     set @recommendationRows = LookupRows('ENT.Project_Recommended__c_Salesforce_1','Id',@projectRecommendationId)
+     IF ROWCOUNT(@recommendationRows) > 0 THEN
+       set @recommendedProjectId = FIELD(Row(@recommendationRows, 1), "Recommended_Project__c")
+             set @projectRows = LookupRows('ENT.Project_TT__c_Salesforce_1','Id',@recommendedProjectId)
+             IF ROWCOUNT(@projectRows) > 0 THEN 
+               set @wasAny = true
+               set @wasAtleastOneRecommendation = true
+
+               set @recommendedProjectRow = Row(@projectRows, 1)
+
+               set @marketingHeadline = FIELD(@recommendedProjectRow, "Project_Marketing_Headline__c")
+               set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Project__c',@recommendedProjectId,'Field__c','marketingHeadline','Language__c', @country)
+             IF ROWCOUNT(@translationQuery) > 0 THEN
+               set @translationRow = Row(@translationQuery, 1)  
+               set @marketingHeadline = FIELD(@translationRow, 'Content__c')
+             ENDIF
+
+               set @status = FIELD(@recommendedProjectRow, "Web_Project_Status__c")
+               set @completionDate = FIELD(@recommendedProjectRow, "Completion_Date__c")
+               IF NOT EMPTY (@completionDate) THEN set @completionDate = Format(@completionDate,"d.MM.yyyy") ENDIF
+
+               set @shortTitle = FIELD(@recommendedProjectRow, "Title__c")
+               set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Project__c',@recommendedProjectId,'Field__c','shortTitle','Language__c', @country)
+             IF ROWCOUNT(@translationQuery) > 0 THEN
+               set @translationRow = Row(@translationQuery, 1)  
+               set @shortTitle = FIELD(@translationRow, 'Content__c')
+             ENDIF
+
+               set @districtName = FIELD(@recommendedProjectRow, "District_Name__c")
+               set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Project__c',@recommendedProjectId,'Field__c','district','Language__c', @country)
+             IF ROWCOUNT(@translationQuery) > 0 THEN
+               set @translationRow = Row(@translationQuery, 1)  
+               set @districtName = FIELD(@translationRow, 'Content__c')
+             ENDIF
+
+               set @images = LookupOrderedRows('ENT.Image__c_Salesforce_1',1,'Index__c ASC', 'Project__c',@recommendedProjectId, "Subtype__c", "ProjectResourceHero")
+               IF ROWCOUNT(@images) > 0 THEN     
+                 set @imageURL = FIELD(Row(@images, 1), "URL__c")
+                 set @imageURL = replace(@imageURL, "{param}",  @imgWidth)
+               ELSE set @imageURL = @defaultProjectImage
+               ENDIF
+
+               set @redirectURL = FIELD(@recommendedProjectRow, "URL__c")
+               IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
+
+                var @translatedStatus
+                IF @country == 'fi' THEN
+                     if @status == 'Planned' THEN
+                        set @translatedStatus = 'Suunnitteilla'
+                     ENDIF
+                     if @status == 'PreMarketing' THEN
+                        set @translatedStatus = 'Ennakkomarkkinoinnissa'
+                     ENDIF
+                     if @status == 'ReadyToMoveIn' THEN
+                        set @translatedStatus = 'Muuttovalmis'
+                     ENDIF
+                     if @status == 'ToBeReady' THEN
+                        set @translatedStatus = 'Arvioitu valmistuminen'
+                     ENDIF
+                ENDIF
+                IF @country == 'cz' THEN
+                      if @status == 'Planned' THEN
+                        set @translatedStatus = 'Plánovaný'
+                     ENDIF
+                     if @status == 'PreMarketing' THEN
+                        set @translatedStatus = 'Předprodej'
+                     ENDIF
+                     if @status == 'ReadyToMoveIn' THEN
+                        set @translatedStatus = 'K nastěhování'
+                     ENDIF
+                     if @status == 'ToBeReady' THEN
+                        set @translatedStatus = 'K dokončení'
+                     ENDIF
+                ENDIF
+                IF @country == 'sk' THEN
+                     if @status == 'Planned' THEN
+                        set @translatedStatus = 'Plánovaný'
+                     ENDIF
+                     if @status == 'PreMarketing' THEN
+                        set @translatedStatus = 'Predpredaj'
+                     ENDIF
+                     if @status == 'ReadyToMoveIn' THEN
+                        set @translatedStatus = 'K nasťahovanie'
+                     ENDIF
+                     if @status == 'ToBeReady' THEN
+                        set @translatedStatus = 'K dokončenie'
+                     ENDIF
+                ENDIF
+
+                IF @status == 'ToBeReady' THEN
+                 set @translatedStatus = CONCAT(@translatedStatus, " ", @completionDate)
+                ENDIF                                 
+
+               IF NOT EMPTY(@districtName) THEN set @shortTitle = CONCAT(@shortTitle, " - ") ENDIF   
+               
+               set @firstRow = CONCAT(@shortTitle, @districtName)
+               set @secondRow = @translatedStatus
+  
+               set @thirdRow = @marketingHeadline
+
+               set @firstRowWeigth = 'light'
+               set @lastRowWeight = 'bold'
+
+              var @buttonText
+              IF @country == 'fi' THEN
+                   set @buttonText = 'Tutustu koteihin'
+              ENDIF
+              IF @country == 'cz' THEN
+                   set @buttonText = 'Zobrazit detail projektu'
+              ENDIF
+              IF @country == 'sk' THEN
+                   set @buttonText = 'Zobraziť detail projektu'
+              ENDIF
+          ENDIF
+        ENDIF
+       ENDIF
+
+
+
+    IF NOT EMPTY(@areaRecommendationId) AND @k==3 THEN
+      set @recommendationRows = LookupRows('ENT.Marketing_Location_Recommended__c_Salesforce_1','Id',@areaRecommendationId)
+      IF ROWCOUNT(@recommendationRows) > 0 THEN 
+        set @recommendedAreaId = FIELD(Row(@recommendationRows, 1), "Recommended_Location__c")
+             set @areaRows = LookupRows('ENT.Marketing_Location__c_Salesforce_1','Id',@recommendedAreaId)
+             IF ROWCOUNT(@areaRows) > 0 THEN 
+               set @wasAny = true       
+               set @wasAtleastOneRecommendation = true
+
+               set @recommendedAreaRow = Row(@areaRows, 1)
+
+
+               set @description = FIELD(@recommendedAreaRow, "Description__c")
+               set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Marketing_Location__c',@recommendedAreaId,'Field__c','marketingDescription','Language__c', @country)
+             IF ROWCOUNT(@translationQuery) > 0 THEN
+               set @translationRow = Row(@translationQuery, 1)  
+               set @description = FIELD(@translationRow, 'Content__c')
+             ENDIF
+
+               SET @descriptionRows = BuildRowSetFromString(@description, ".")
+               SET @descriptionRowCount = rowcount(@descriptionRows)
+               if @descriptionRowCount > 0 THEN                                
+                 SET @descriptionSentence1 = Field(Row(@descriptionRows, 1), 1)
+               ENDIF
+
+               set @marketingName = FIELD(@recommendedAreaRow, "Marketing_Name__c")
+               set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Marketing_Location__c',@recommendedAreaId,'Field__c','marketingName','Language__c', @country)
+             IF ROWCOUNT(@translationQuery) > 0 THEN
+               set @translationRow = Row(@translationQuery, 1)  
+               set @marketingName = FIELD(@translationRow, 'Content__c')
+             ENDIF                           
+
+               set @cityId = FIELD(@recommendedAreaRow, "City_Id__c")
+               set @districtId = FIELD(@recommendedAreaRow, "District_Id__c")
+
+              IF NOT EMPTY (@cityId) THEN 
+               set @cityRows = LookupRows('ENT.Marketing_Location__c_Salesforce_1','External_Id__c',@cityId)
+               IF ROWCOUNT (@cityRows) > 0 THEN 
+                  set @cityRow = Row(@cityRows, 1)
+                  set @citySfId = FIELD(@cityRow, 'Id')
+                  set @cityName = FIELD(@cityRow, "Marketing_Name__c")
+                   set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Marketing_Location__c',@citySfId,'Field__c','marketingName','Language__c', @country)
+                 IF ROWCOUNT(@translationQuery) > 0 THEN
+                   set @translationRow = Row(@translationQuery, 1)  
+                   set @cityName = FIELD(@translationRow, 'Content__c')
+                 ENDIF   
+               ENDIF
+              ENDIF
+
+              IF NOT EMPTY (@districtId) THEN                            
+               set @districtRows = LookupRows('ENT.Marketing_Location__c_Salesforce_1','External_Id__c',@districtId)
+               IF ROWCOUNT (@districtRows) > 0 THEN          
+                set @districtRow = Row(@districtRows, 1)
+                set @districtSfId = FIELD(@districtRow, 'Id')
+                  set @districtName = FIELD(@districtRow, "Marketing_Name__c")
+                 set @translationQuery = LookupRows('ENT.Content_Translation__c_Salesforce_1','Marketing_Location__c',@districtSfId,'Field__c','marketingName','Language__c', @country)
+               IF ROWCOUNT(@translationQuery) > 0 THEN
+                 set @translationRow = Row(@translationQuery, 1)  
+                 set @districtName = FIELD(@translationRow, 'Content__c')
+                ENDIF                               
+               ENDIF
+              ENDIF
+
+
+               set @firstRow = @marketingName
+               IF NOT EMPTY(@districtName) THEN set @firstRow = CONCAT(@firstRow, " - ", @districtName) ENDIF   
+               IF NOT EMPTY(@cityName) THEN set @firstRow = CONCAT(@firstRow, " - ", @cityName) ENDIF    
+
+               set @images = LookupOrderedRows('ENT.Image__c_Salesforce_1',1,'Index__c ASC', 'Marketing_Location__c',@recommendedAreaId, "Subtype__c", "AreaResourceHero")
+               IF ROWCOUNT (@images) > 0 THEN           
+                set @imageURL = FIELD(Row(@images, 1), "URL__c")
+                set @imageURL = replace(@imageURL, "{param}",  @imgWidth)
+               ELSE set @imageURL = @defaultAreaImage
+               ENDIF
+
+               set @redirectURL = FIELD(@recommendedAreaRow, "URL__c")
+               IF EMPTY(@redirectURL) THEN set @redirectURL = CONCAT("https://www.yit.", @country, "/") ENDIF     
+
+               set @firstRow = @firstRow
+               set @secondRow = ''
+               set @thirdRow = @descriptionSentence1
+
+               set @firstRowWeigth = 'bold'
+               set @lastRowWeight = 'light'
+
+              var @buttonText
+              IF @country == 'fi' THEN
+                   set @buttonText = 'Lue lisää asuinalueesta'
+              ENDIF
+              IF @country == 'cz' THEN
+                   set @buttonText = 'Zobrazit detail oblasti'
+              ENDIF
+              IF @country == 'sk' THEN
+                   set @buttonText = 'Zobraziť detail oblasti'
+              ENDIF     
+            ENDIF
+          ENDIF
+        ENDIF
+
+ if @wasAny == true THEN
+</script>
+%%[
+if @debug == true THEN
+]%%
+
+recommendedProductId: %%=v(@recommendedProductId)=%%<br>
+redirectURL: %%=v(@redirectURL)=%%<br>
+imageURL: %%=v(@imageURL)=%%<br>
+
+firstRow: %%=v(@firstRow)=%%<br>
+secondRow: %%=v(@secondRow)=%%<br>
+thirdRow: %%=v(@thirdRow)=%%<br>
+%%[
+ENDIF
+]%%
+<!--<style>
+   @media screen and (min-width: 641px) {
+        p.recommendation{
+          font-size:1rem;
+        }
+        div.recommendation{
+          font-size:1rem;
+          width:100% !important;
+        }
+        img.recommendation{width:470px !important;}
+      }
+
+      @media screen and (max-width:640px) {
+        p.recommendation{
+          font-size:1.5rem;
+        }
+        div.recommendation{
+          font-size:1.5rem;
+          width:100% !important;
+        }
+        img.recommendation{width:100% !important;}
+        table.recommendation{width:65% !important;}
+      }
+  </style>-->
+<a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;"><div class="recommendation" style="background-color:transparent; border-style:none; padding: 0;">
+      <div style="padding:0; padding-top:10px; width: 100%; margin:auto; border-style: none; background-color: transparent;">
+        <p class ="recommendation"  style="margin: 10px 0px 0px 0px; color: #5b727c; font-family: 'Helvetica'; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
+                                                          
+     %%=v(@firstRow)=%%
+</p><p class ="recommendation" style="margin: 10px 0px 0px 0px; color: #5b727c; font-family: 'Helvetica'; font-weight: light; text-align:center; width: 100%;">
+                                                          
+     %%=v(@secondRow)=%%
+</p><p class ="recommendation"  style="margin: 10px 0px 0px 0px; color: #5b727c; padding-top: 15px;font-family: 'Helvetica'; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
+                                                          
+     %%=v(@thirdRow)=%%
+</p>                   
+      </div>
+      
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td valign="top">
+        <div style="min-height: 45px; max-height:45px; 
+                    margin: 0 auto; text-align: center; border-style: none;">
+      <table class = "recommendation" align="center" border="0" cellpadding="0" cellspacing="0" style="position:relative; opacity:0.999; width: 240px; margin:auto; text-align:center;">
+      <tr>
+        <td valign="top">
+
+
+          <table role="presentation" class="hero-textbox" border="0" cellpadding="0" cellspacing="0" align="center" style = "width:100%; margin:auto; text-align:center;">
+            <tr>
+              <td valign="top" style="border: none;">
+                <div style="border: none; background-color: transparent; 
+                            border-top: 19px solid transparent;width: 100%; margin:auto; text-align:center;"></div>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">
+                <table style = "border: none; width: 100%;"
+                       border="0" cellpadding="0" cellspacing="0" align="center">
+                <tr>
+                  <td align="center" style ="border:none; background-color: transparent; width: 100%;">
+                    <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">
+                    <div class ="recommendation"  style="font-family: 'Helvetica'; 
+                                color: #FFFFFF; text-decoration: none; 
+                                text-decoration: none; white-space: nowrap;
+                                font-weight: bold;
+                                margin: none;
+                                text-align:center;
+                                border: none;
+                                background-color: #DB4D69;
+                                border-top: 11px solid #DB4D69;
+                                border-bottom: 11px solid #DB4D69;
+                                ">
+                       %%=v(@buttonText)=%%
+                    
+                    </div>
+                  </a>
+                  </td>
+                </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+<!--[if mso]>
+  </v:textbox>
+  </v:rect>
+<![endif]-->
+        </td>
+      </tr>
+      </table>
+          </div>
+        <div style="text-align: center; border-style: none;">
+          <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;"><img style = "margin: auto; border-style: none; padding: 0; width: 470px;" class ="recommendation" src="%%=v(@imageURL)=%%" alt=""></a>
+                                                       <!-- <img class="reset" src="https://res.cloudinary.com/yitpre/image/upload/w_450/v1616814926/263904.jpg" alt="" style="vertical-align: middle; padding-left: 15px; padding-right: 15px;" border="0">-->
+      </div>
+      </td>
+    </tr>
+    </table>
+</div>
+</a>
+
+ <div style="height: 23px; background-color:white; border-style: none;"></div>
+<script runat="server" language="Ampscript"> 
+   ENDIF
+     NEXT @i 
+    NEXT @k 
+   ENDIF
+</script>
+
+<!--<a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">Visit our webpage today!</a>-->
+<script runat="server" language="Ampscript"> 
+   ENDIF
+</script>
+
+<script runat="server">
+    }catch(e){
+      debugValue(e);
+    }
+</script>
