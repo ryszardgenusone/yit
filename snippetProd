@@ -443,106 +443,85 @@ thirdRow: %%=v(@thirdRow)=%%<br>
 %%[
 ENDIF
 ]%%
-<!--<style>
-   @media screen and (min-width: 641px) {
-        p.recommendation{
-          font-size:1rem;
-        }
-        div.recommendation{
-          font-size:1rem;
-          width:100% !important;
-        }
-        img.recommendation{width:470px !important;}
-      }
 
-      @media screen and (max-width:640px) {
-        p.recommendation{
-          font-size:1.5rem;
-        }
-        div.recommendation{
-          font-size:1.5rem;
-          width:100% !important;
-        }
-        img.recommendation{width:100% !important;}
-        table.recommendation{width:65% !important;}
-      }
-  </style>-->
-<a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;"><div class="recommendation" style="background-color:transparent; border-style:none; padding: 0;">
-      <div style="padding:0; padding-top:10px; width: 100%; margin:auto; border-style: none; background-color: transparent;">
-        <p class ="recommendation"  style="margin: 10px 0px 0px 0px; color: #5b727c; font-family: 'Helvetica'; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;">
-                                                          
-     %%=v(@firstRow)=%%
-</p><p class ="recommendation" style="margin: 10px 0px 0px 0px; color: #5b727c; font-family: 'Helvetica'; font-weight: light; text-align:center; width: 100%;">
-                                                          
-     %%=v(@secondRow)=%%
-</p><p class ="recommendation"  style="margin: 10px 0px 0px 0px; color: #5b727c; padding-top: 15px;font-family: 'Helvetica'; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;">
-                                                          
-     %%=v(@thirdRow)=%%
-</p>                   
-      </div>
-      
-    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr>
-      <td valign="top">
-        <div style="min-height: 45px; max-height:45px; 
-                    margin: 0 auto; text-align: center; border-style: none;">
-      <table class = "recommendation" align="center" border="0" cellpadding="0" cellspacing="0" style="position:relative; opacity:0.999; width: 240px; margin:auto; text-align:center;">
+<a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;font-family: 'Helvetica';">
+  <div class="recommendation" style="font-family: 'Helvetica';mso-line-height-rule: exactly; line-height: 1.4; background-color:transparent; border-style:none; padding: 0; margin:0;">
+    <table align="center" style="background-color:transparent; margin:0 0 0 0; padding:0 0 0 0; mso-table-lspace:0pt;mso-table-rspace:0pt;" border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
-        <td valign="top">
-
-
-          <table role="presentation" class="hero-textbox" border="0" cellpadding="0" cellspacing="0" align="center" style = "width:100%; margin:auto; text-align:center;">
-            <tr>
-              <td valign="top" style="border: none;">
-                <div style="border: none; background-color: transparent; 
-                            border-top: 19px solid transparent;width: 100%; margin:auto; text-align:center;"></div>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top">
-                <table style = "border: none; width: 100%;"
-                       border="0" cellpadding="0" cellspacing="0" align="center">
-                <tr>
-                  <td align="center" style ="border:none; background-color: transparent; width: 100%;">
-                    <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">
-                    <div class ="recommendation"  style="font-family: 'Helvetica'; 
-                                color: #FFFFFF; text-decoration: none; 
-                                text-decoration: none; white-space: nowrap;
-                                font-weight: bold;
-                                margin: none;
-                                text-align:center;
-                                border: none;
-                                background-color: #DB4D69;
-                                border-top: 11px solid #DB4D69;
-                                border-bottom: 11px solid #DB4D69;
-                                ">
-                       %%=v(@buttonText)=%%
-                    
-                    </div>
-                  </a>
-                  </td>
-                </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-<!--[if mso]>
-  </v:textbox>
-  </v:rect>
-<![endif]-->
+        <td height="0">
+          <div style="padding:0; padding-top:10px; width: 100%; margin:0 0 0 0; border-style: none; background-color: transparent; mso-table-lspace:0pt;mso-table-rspace:0pt;">
+            <div class="recommendation" style="margin:0; padding:0; color: #5b727c; font-family: 'Helvetica'; font-weight: %%=v(@firstRowWeigth)=%%; text-align:center; width: 100%;"> %%=v(@firstRow)=%% </div>
+            <div class="recommendation" style="Margin:0 0 0 0; padding:0 0 0 0; color: #5b727c; font-family: 'Helvetica'; font-weight: light; text-align:center; width: 100%; border:none;"> %%=v(@secondRow)=%% </div>
+            <!--[if !mso]>
+      <!---->
+            <table align="center" border="0" cellspacing="0" cellpadding="0">
+              <td height="0" style="margin: none; border:none; border-top: 12px solid transparent;"></td>
+            </table>
+            <!-- 
+      <![endif]-->
+            <!--[if mso]>
+      <v:rect
+       xmlns:v="urn:schemas-microsoft-com:vml" stroked="false" filled="false" style="width:240px;height:9px;">
+       <v:textbox inset="0,0,0,0"></v:textbox>
+      </v:rect>
+      <![endif]-->
+            <div class="recommendation" style="Margin:0; padding:0; color: #5b727c; font-family: 'Helvetica'; font-weight: %%=v(@lastRowWeight)=%%; text-align:center; width: 100%;"> %%=v(@thirdRow)=%% </div>
+          </div>
+          <div style="max-height:43px; 
+                  margin:0 0 0 0; padding:0 0 0 0; text-align: center; border-style: none;">
+            <div style="border: none; border-top: 19px solid transparent;width: 100%; margin:auto; text-align:center;"></div>
+            <table class="recommendation" align="center" border="0" cellpadding="0" cellspacing="0" style="opacity:0.999; width: 240px; margin:0 0 0 0; padding:0 0 0 0; margin-left:auto; margin-right:auto; text-align:center;
+                     background-color:transparent;">
+              <tr height="0">
+                <td height="0">
+                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="width:100%; margin:0 0 0 0; padding: 0 0 0 0; text-align:center;">
+                    <tr>
+                      <td style="margin:0 0 0 0; padding:0 0 0 0;" height="0">
+                        <table style="border: none; width: 100%; margin:0 0 0 0; padding:0 0 0 0;" border="0" cellpadding="0" cellspacing="0" align="center">
+                          <tr height="0">
+                            <td style="margin:0 0 0 0; padding:0 0 0 0; border:none; background-color: transparent; width: 100%;" height="0">
+                              <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="padding:0; border:0; margin: 0; text-decoration: none;">
+                                <div class="recommendation" style="font-family: 'Helvetica'; 
+   color: #FFFFFF; text-decoration: none; 
+   text-decoration: none; white-space: nowrap;
+   font-weight: bold;
+   margin: 0;
+   padding: 0;                         
+   text-align:center;
+   border: none;
+   background-color: #DB4D69;
+   border-top: 12px solid #DB4D69;
+   border-bottom: 12px solid #DB4D69;
+   "> %%=v(@buttonText)=%% </div>
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <!--[if mso]>
+     <v:rect
+      xmlns:v="urn:schemas-microsoft-com:vml" stroked="false" filled="false" style="width:240px;height:12px;">
+      <v:textbox inset="0,0,0,0"></v:textbox>
+     </v:rect>
+     <![endif]-->
+          <div style="text-align: center; border-style: none;">
+            <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;">
+              <img width="470" style="display:block; margin: auto; border-style: none; padding: 0; width: 470px;" class="recommendation" src="%%=v(@imageURL)=%%" alt="">
+            </a>
+            <!-- <img class="reset" src="https://res.cloudinary.com/yitpre/image/upload/w_450/v1616814926/263904.jpg" alt="" style="vertical-align: middle; padding-left: 15px; padding-right: 15px;" border="0">-->
+          </div>
         </td>
       </tr>
-      </table>
-          </div>
-        <div style="text-align: center; border-style: none;">
-          <a href="%%=redirectTo(@redirectURL)=%%" target="_blank" style="text-decoration: none;"><img style = "margin: auto; border-style: none; padding: 0; width: 470px;" class ="recommendation" src="%%=v(@imageURL)=%%" alt=""></a>
-                                                       <!-- <img class="reset" src="https://res.cloudinary.com/yitpre/image/upload/w_450/v1616814926/263904.jpg" alt="" style="vertical-align: middle; padding-left: 15px; padding-right: 15px;" border="0">-->
-      </div>
-      </td>
-    </tr>
     </table>
-</div>
+  </div>
 </a>
+
 
  <div style="height: 23px; background-color:white; border-style: none;"></div>
 <script runat="server" language="Ampscript"> 
